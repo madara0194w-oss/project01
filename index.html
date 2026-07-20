@@ -915,8 +915,12 @@
             font-size: 20px;
             color: var(--accent);
             font-weight: 700;
-            align-self: center;
-            margin-top: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 64px;
+            align-self: flex-start;
+            margin-top: 0;
         }
 
         .customer-info-title {
@@ -1758,7 +1762,432 @@
             .order-item { width: 68px; }
             .order-items-row { gap: 6px; }
         }
-    </style>
+
+        /* ===== BEFORE AFTER IMAGE COMPARISON SLIDER ===== */
+        .comparison-slider-section {
+            padding: 40px 20px 60px;
+            background-color: var(--cream);
+        }
+
+        .comparison-slider-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .comparison-slider {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1.91 / 1;
+            overflow: hidden;
+            border-radius: 20px;
+            box-shadow: 0 12px 40px rgba(139, 69, 19, 0.15);
+            border: 4px solid var(--white);
+            background: var(--light-gray);
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .slider-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            pointer-events: none;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .before-img {
+            z-index: 1;
+        }
+
+        .after-img {
+            z-index: 2;
+            /* Displays After image on the left and clips the right side based on --exposure */
+            clip-path: polygon(0 0, var(--exposure) 0, var(--exposure) 100%, 0 100%);
+            -webkit-clip-path: polygon(0 0, var(--exposure) 0, var(--exposure) 100%, 0 100%);
+        }
+
+        .slider-divider {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: var(--exposure);
+            width: 4px;
+            background: var(--white);
+            z-index: 3;
+            pointer-events: none;
+            transform: translateX(-50%);
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+        }
+
+        .slider-handle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 44px;
+            height: 44px;
+            background: var(--accent);
+            border: 4px solid var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35);
+            z-index: 4;
+            gap: 2px;
+        }
+
+        .handle-arrow {
+            font-size: 11px;
+            color: var(--dark);
+            font-weight: 900;
+            user-select: none;
+        }
+
+        .slider-badge {
+            position: absolute;
+            top: 20px;
+            padding: 6px 14px;
+            background: rgba(44, 24, 16, 0.85);
+            color: var(--white);
+            font-size: 12px;
+            font-weight: 700;
+            border-radius: 20px;
+            z-index: 3;
+            pointer-events: none;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .badge-before {
+            right: 20px;
+        }
+
+        .badge-after {
+            left: 20px;
+        }
+
+        .slider-input {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: ew-resize;
+            z-index: 5;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Responsive styling for slider badges and handle */
+        @media (max-width: 480px) {
+            .comparison-slider-section {
+                padding: 30px 14px 40px;
+            }
+            .comparison-slider {
+                border-radius: 12px;
+                border-width: 2px;
+            }
+            .slider-badge {
+                font-size: 9px;
+                padding: 4px 10px;
+                top: 10px;
+            }
+            .badge-before { right: 10px; }
+            .badge-after { left: 10px; }
+            .slider-handle {
+                width: 34px;
+                height: 34px;
+                border-width: 3px;
+            }
+            .handle-arrow {
+                font-size: 9px;
+            }
+        }
+
+        /* Unified Mobile Optimization for Combos Viewport Fit */
+        /* Remove order buttons from all product cards globally */
+        .product-card .btn-order {
+            display: none !important;
+        }
+
+        @media (max-width: 768px) {
+            /* 1. Force the products grid into 3 columns side-by-side */
+            .products-grid {
+                grid-template-columns: repeat(3, 1fr) !important;
+                gap: 8px !important;
+                padding-left: 0 !important;
+                padding-right: 0 !important;
+            }
+
+            /* 2. Tighten card container */
+            .product-card {
+                border-radius: 12px !important;
+                box-shadow: 0 4px 15px rgba(139, 69, 19, 0.08) !important;
+                display: flex !important;
+                flex-direction: column !important;
+                background: var(--white) !important;
+                border: 1px solid rgba(139, 69, 19, 0.1) !important;
+            }
+
+            .product-card.featured {
+                transform: scale(1) !important;
+                border-color: var(--accent) !important;
+            }
+
+            /* 3. Hide badging overlays that are too big */
+            .card-badge {
+                font-size: 8px !important;
+                padding: 2px 4px !important;
+                border-radius: 4px !important;
+                top: 4px !important;
+                left: 4px !important;
+                background: rgba(139, 69, 19, 0.9) !important;
+                color: var(--white) !important;
+            }
+
+            .popular-badge {
+                font-size: 8px !important;
+                padding: 2px 4px !important;
+                border-radius: 4px !important;
+                top: -10px !important;
+                left: 50% !important;
+                transform: translateX(-50%) !important;
+                white-space: nowrap !important;
+                z-index: 11 !important;
+            }
+
+            /* 4. Shrink the product visual gallery height to keep it compact and fully visible */
+            .product-visual {
+                height: 120px !important;
+                background-color: var(--light-gray) !important;
+            }
+
+            /* Hide the curved overlay at the bottom of the images on mobile */
+            .product-visual::after {
+                display: none !important;
+            }
+
+            .product-photo {
+                object-fit: contain !important;
+                background-color: var(--light-gray) !important;
+            }
+
+            /* Hide arrows, counters, and dots in compact cards */
+            .product-visual .gallery-arrow,
+            .product-visual .gallery-dots,
+            .product-visual .gallery-counter {
+                display: none !important;
+            }
+
+            /* Shrink fallback vector drawings if used */
+            .product-visual .bottle {
+                transform: scale(0.4) !important;
+                margin: -20px -15px !important;
+            }
+
+            .product-visual .accessories {
+                transform: scale(0.4) !important;
+                margin-top: -10px !important;
+            }
+
+            /* 5. Optimize and shrink the card body text/elements */
+            .card-body {
+                padding: 8px !important;
+                flex-grow: 1 !important;
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: flex-start !important;
+            }
+
+            .combo-number {
+                font-size: 8px !important;
+                letter-spacing: 0.5px !important;
+                margin-bottom: 2px !important;
+                text-align: center !important;
+            }
+
+            .product-name {
+                font-size: 11px !important;
+                font-weight: 700 !important;
+                color: var(--primary-dark) !important;
+                line-height: 1.2 !important;
+                text-align: center !important;
+                margin-bottom: 4px !important;
+                height: 28px !important; /* Fixed height for consistency */
+                overflow: hidden !important;
+                display: -webkit-box !important;
+                -webkit-line-clamp: 2 !important;
+                -webkit-box-orient: vertical !important;
+            }
+
+            /* Restore and optimize product description */
+            .product-desc {
+                display: block !important;
+                font-size: 8px !important;
+                line-height: 1.15 !important;
+                color: var(--gray) !important;
+                text-align: center !important;
+                margin-bottom: 4px !important;
+                height: 38px !important; /* Fixed height for 3 lines on mobile */
+                overflow: hidden !important;
+                display: -webkit-box !important;
+                -webkit-line-clamp: 3 !important;
+                -webkit-box-orient: vertical !important;
+            }
+
+            /* Restore and optimize includes section title */
+            .includes-title {
+                display: block !important;
+                font-size: 8px !important;
+                font-weight: 700 !important;
+                color: var(--primary) !important;
+                margin-top: 4px !important;
+                margin-bottom: 3px !important;
+                text-align: center !important;
+                letter-spacing: 0px !important;
+            }
+
+            /* Restore and optimize includes list items */
+            .includes-list {
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 2px !important;
+                margin-bottom: 6px !important;
+                padding: 0 !important;
+                list-style: none !important;
+            }
+
+            .includes-list li {
+                display: flex !important;
+                align-items: flex-start !important;
+                gap: 3px !important;
+                padding: 1px 0 !important;
+                font-size: 8px !important;
+                line-height: 1.15 !important;
+                color: var(--dark) !important;
+                border-bottom: none !important;
+            }
+
+            .includes-list li .check-icon {
+                width: 8px !important;
+                height: 8px !important;
+                min-width: 8px !important;
+                min-height: 8px !important;
+                background: none !important;
+                color: var(--success) !important;
+                font-size: 8px !important;
+                display: inline-flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                border-radius: 0 !important;
+                margin: 0 !important;
+            }
+
+            .includes-list li span {
+                text-align: left !important;
+            }
+
+            .item-highlight {
+                font-weight: 700 !important;
+            }
+
+            /* 6. Compact Price section */
+            .price-section {
+                margin-top: auto !important; /* Align price section at the bottom of the card content */
+                padding-top: 4px !important;
+                border-top: 1px dashed rgba(139, 69, 19, 0.1) !important;
+                text-align: center !important;
+                background: none !important;
+                box-shadow: none !important;
+                border-radius: 0 !important;
+                padding: 0 !important;
+            }
+
+            .price-label {
+                display: none !important;
+            }
+
+            .price {
+                font-size: 14px !important;
+                font-weight: 800 !important;
+                color: var(--primary-dark) !important;
+                justify-content: center !important;
+                align-items: center !important;
+                gap: 1px !important;
+                margin: 0 !important;
+            }
+
+            .price-currency {
+                font-size: 9px !important;
+            }
+
+            .price-note {
+                display: none !important;
+            }
+
+            .price-savings {
+                font-size: 8px !important;
+                padding: 1px 4px !important;
+                margin-top: 2px !important;
+                border-radius: 4px !important;
+                display: inline-block !important;
+                white-space: nowrap !important;
+                background: rgba(46, 125, 50, 0.1) !important;
+                color: var(--success) !important;
+                font-weight: 600 !important;
+            }
+
+            /* 7. Make the order builder combo selection tabs side-by-side on mobile */
+            .combo-tabs {
+                grid-template-columns: repeat(3, 1fr) !important;
+                gap: 6px !important;
+                margin-bottom: 14px !important;
+            }
+
+            .combo-tab {
+                padding: 8px 4px !important;
+                border-radius: 8px !important;
+            }
+
+            .combo-tab-title {
+                font-size: 11px !important;
+                font-weight: 700 !important;
+                line-height: 1.2 !important;
+            }
+
+            .combo-tab-price {
+                font-size: 11px !important;
+                font-weight: 600 !important;
+                margin-top: 2px !important;
+            }
+        }
+        </style>
+        <!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '4416875668587350');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=4416875668587350&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
 </head>
 <body>
 
@@ -1812,7 +2241,7 @@
         <div class="products-grid">
 
             <!-- COMBO 1 -->
-            <div class="product-card">
+            <div class="product-card" onclick="goToOrderBuilder(1)" style="cursor: pointer;">
                 <div class="card-badge">🎁 কম্বো ১</div>
 
                 <div class="product-visual" data-gallery="combo1">
@@ -1846,7 +2275,7 @@
                                 <div class="acc-label">১টি ব্রাশ</div>
                             </div>
                         </div>
-                        <img src="image1.jpg" alt="স্টার্টার কেয়ার কম্বো" class="product-photo" loading="lazy" onclick="openLightbox(this)"
+                        <img src="image1.jpg" alt="স্টার্টার কেয়ার কম্বো" class="product-photo" loading="lazy" onclick="event.stopPropagation(); openLightbox(this)"
                              onload="galleryImgLoaded(this)" onerror="galleryImgFailed(this)">
                     </div>
 
@@ -1856,7 +2285,7 @@
                             <div class="gallery-fallback-icon">🧴</div>
                             <div class="gallery-fallback-label">ক্লিনার</div>
                         </div>
-                        <img src="cleaner.png" alt="ক্লিনার" class="product-photo" loading="lazy" onclick="openLightbox(this)"
+                        <img src="cleaner.png" alt="ক্লিনার" class="product-photo" loading="lazy" onclick="event.stopPropagation(); openLightbox(this)"
                              onload="galleryImgLoaded(this)" onerror="galleryImgFailed(this)">
                     </div>
 
@@ -1866,7 +2295,7 @@
                             <div class="gallery-fallback-icon">🛢️</div>
                             <div class="gallery-fallback-label">ভার্নিশ ২৪০ গ্রাম</div>
                         </div>
-                        <img src="polish240.png" alt="ভার্নিশ ২৪০ গ্রাম" class="product-photo" loading="lazy" onclick="openLightbox(this)"
+                        <img src="polish240.png" alt="ভার্নিশ ২৪০ গ্রাম" class="product-photo" loading="lazy" onclick="event.stopPropagation(); openLightbox(this)"
                              onload="galleryImgLoaded(this)" onerror="galleryImgFailed(this)">
                     </div>
 
@@ -1874,9 +2303,9 @@
                     <div class="gallery-slide" data-slide="3">
                         <div class="gallery-fallback">
                             <div class="gallery-fallback-icon">🧻</div>
-                            <div class="gallery-fallback-label">তোয়ালে</div>
+                            <div class="gallery-fallback-label">মাইক্রোফাইবার কাপড়</div>
                         </div>
-                        <img src="towel.png" alt="তোয়ালে" class="product-photo" loading="lazy" onclick="openLightbox(this)"
+                        <img src="towel.png" alt="মাইক্রোফাইবার কাপড়" class="product-photo" loading="lazy" onclick="event.stopPropagation(); openLightbox(this)"
                              onload="galleryImgLoaded(this)" onerror="galleryImgFailed(this)">
                     </div>
 
@@ -1886,7 +2315,7 @@
                             <div class="gallery-fallback-icon">🖌️</div>
                             <div class="gallery-fallback-label">ব্রাশ</div>
                         </div>
-                        <img src="brush.png" alt="ব্রাশ" class="product-photo" loading="lazy" onclick="openLightbox(this)"
+                        <img src="brush.png" alt="ব্রাশ" class="product-photo" loading="lazy" onclick="event.stopPropagation(); openLightbox(this)"
                              onload="galleryImgLoaded(this)" onerror="galleryImgFailed(this)">
                     </div>
 
@@ -1896,12 +2325,12 @@
                             <div class="gallery-fallback-icon">🧤</div>
                             <div class="gallery-fallback-label">গ্লাভস</div>
                         </div>
-                        <img src="gloves.png" alt="গ্লাভস" class="product-photo" loading="lazy" onclick="openLightbox(this)"
+                        <img src="gloves.png" alt="গ্লাভস" class="product-photo" loading="lazy" onclick="event.stopPropagation(); openLightbox(this)"
                              onload="galleryImgLoaded(this)" onerror="galleryImgFailed(this)">
                     </div>
 
-                    <button class="gallery-arrow gallery-prev" onclick="galleryNav(this, -1)" aria-label="আগের ছবি">‹</button>
-                    <button class="gallery-arrow gallery-next" onclick="galleryNav(this, 1)" aria-label="পরের ছবি">›</button>
+                    <button class="gallery-arrow gallery-prev" onclick="event.stopPropagation(); galleryNav(this, -1)" aria-label="আগের ছবি">‹</button>
+                    <button class="gallery-arrow gallery-next" onclick="event.stopPropagation(); galleryNav(this, 1)" aria-label="পরের ছবি">›</button>
                     <div class="gallery-dots">
                         <span class="gallery-dot active"></span>
                         <span class="gallery-dot"></span>
@@ -1938,7 +2367,7 @@
                         </li>
                         <li>
                             <div class="check-icon">✓</div>
-                            <span><span class="item-highlight">রুমাল</span> — ১টি</span>
+                            <span><span class="item-highlight">মাইক্রোফাইবার কাপড়</span> — ১টি</span>
                         </li>
                     </ul>
 
@@ -1958,7 +2387,7 @@
             </div>
 
             <!-- COMBO 2 - FEATURED -->
-            <div class="product-card featured">
+            <div class="product-card featured" onclick="goToOrderBuilder(2)" style="cursor: pointer;">
                 <div class="popular-badge">⭐ সবচেয়ে জনপ্রিয়</div>
                 <div class="card-badge">🏆 কম্বো ২</div>
 
@@ -1993,7 +2422,7 @@
                                 <div class="acc-label">১টি ব্রাশ</div>
                             </div>
                         </div>
-                        <img src="image2.jpg" alt="প্রফেশনাল কেয়ার কম্বো" class="product-photo" loading="lazy" onclick="openLightbox(this)"
+                        <img src="image2.jpg" alt="প্রফেশনাল কেয়ার কম্বো" class="product-photo" loading="lazy" onclick="event.stopPropagation(); openLightbox(this)"
                              onload="galleryImgLoaded(this)" onerror="galleryImgFailed(this)">
                     </div>
 
@@ -2003,7 +2432,7 @@
                             <div class="gallery-fallback-icon">🧴</div>
                             <div class="gallery-fallback-label">ক্লিনার</div>
                         </div>
-                        <img src="cleaner.png" alt="ক্লিনার" class="product-photo" loading="lazy" onclick="openLightbox(this)"
+                        <img src="cleaner.png" alt="ক্লিনার" class="product-photo" loading="lazy" onclick="event.stopPropagation(); openLightbox(this)"
                              onload="galleryImgLoaded(this)" onerror="galleryImgFailed(this)">
                     </div>
 
@@ -2013,7 +2442,7 @@
                             <div class="gallery-fallback-icon">🛢️</div>
                             <div class="gallery-fallback-label">ভার্নিশ ৩০০ গ্রাম</div>
                         </div>
-                        <img src="polish300.png" alt="ভার্নিশ ৩০০ গ্রাম" class="product-photo" loading="lazy" onclick="openLightbox(this)"
+                        <img src="polish300.png" alt="ভার্নিশ ৩০০ গ্রাম" class="product-photo" loading="lazy" onclick="event.stopPropagation(); openLightbox(this)"
                              onload="galleryImgLoaded(this)" onerror="galleryImgFailed(this)">
                     </div>
 
@@ -2021,9 +2450,9 @@
                     <div class="gallery-slide" data-slide="3">
                         <div class="gallery-fallback">
                             <div class="gallery-fallback-icon">🧻</div>
-                            <div class="gallery-fallback-label">তোয়ালে</div>
+                            <div class="gallery-fallback-label">মাইক্রোফাইবার কাপড়</div>
                         </div>
-                        <img src="towel.png" alt="তোয়ালে" class="product-photo" loading="lazy" onclick="openLightbox(this)"
+                        <img src="towel.png" alt="মাইক্রোফাইবার কাপড়" class="product-photo" loading="lazy" onclick="event.stopPropagation(); openLightbox(this)"
                              onload="galleryImgLoaded(this)" onerror="galleryImgFailed(this)">
                     </div>
 
@@ -2033,7 +2462,7 @@
                             <div class="gallery-fallback-icon">🖌️</div>
                             <div class="gallery-fallback-label">ব্রাশ</div>
                         </div>
-                        <img src="brush.png" alt="ব্রাশ" class="product-photo" loading="lazy" onclick="openLightbox(this)"
+                        <img src="brush.png" alt="ব্রাশ" class="product-photo" loading="lazy" onclick="event.stopPropagation(); openLightbox(this)"
                              onload="galleryImgLoaded(this)" onerror="galleryImgFailed(this)">
                     </div>
 
@@ -2043,12 +2472,12 @@
                             <div class="gallery-fallback-icon">🧤</div>
                             <div class="gallery-fallback-label">গ্লাভস</div>
                         </div>
-                        <img src="gloves.png" alt="গ্লাভস" class="product-photo" loading="lazy" onclick="openLightbox(this)"
+                        <img src="gloves.png" alt="গ্লাভস" class="product-photo" loading="lazy" onclick="event.stopPropagation(); openLightbox(this)"
                              onload="galleryImgLoaded(this)" onerror="galleryImgFailed(this)">
                     </div>
 
-                    <button class="gallery-arrow gallery-prev" onclick="galleryNav(this, -1)" aria-label="আগের ছবি">‹</button>
-                    <button class="gallery-arrow gallery-next" onclick="galleryNav(this, 1)" aria-label="পরের ছবি">›</button>
+                    <button class="gallery-arrow gallery-prev" onclick="event.stopPropagation(); galleryNav(this, -1)" aria-label="আগের ছবি">‹</button>
+                    <button class="gallery-arrow gallery-next" onclick="event.stopPropagation(); galleryNav(this, 1)" aria-label="পরের ছবি">›</button>
                     <div class="gallery-dots">
                         <span class="gallery-dot active"></span>
                         <span class="gallery-dot"></span>
@@ -2085,7 +2514,7 @@
                         </li>
                          <li>
                             <div class="check-icon">✓</div>
-                            <span><span class="item-highlight">রুমাল</span> — ১টি</span>
+                            <span><span class="item-highlight">মাইক্রোফাইবার কাপড়</span> — ১টি</span>
                         </li>
                     </ul>
 
@@ -2105,7 +2534,7 @@
             </div>
 
             <!-- COMBO 3 -->
-            <div class="product-card">
+            <div class="product-card" onclick="goToOrderBuilder(3)" style="cursor: pointer;">
                 <div class="card-badge" style="background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: white;">💎 কম্বো ৩</div>
 
                 <div class="product-visual" data-gallery="combo3">
@@ -2122,12 +2551,12 @@
                         </div>
                         <div style="font-size: 28px; color: var(--accent); font-weight: 700; margin-bottom: 20px;">+</div>
                         <div class="bottle">
-                            <div class="bottle-cap cleaner-cap"></div>
-                            <div class="bottle-img cleaner-bottle" style="width:85px; height:145px;">
+                            <div class="bottle-cap varnish-cap"></div>
+                            <div class="bottle-img varnish-bottle" style="width:85px; height:145px;">
                                 <div class="bottle-shine"></div>
-                                <div class="bottle-label">CLEANER XL</div>
+                                <div class="bottle-label">VARNISH XL</div>
                             </div>
-                            <div class="bottle-size" style="background: #E3F2FD; color: #1565C0;">500 ml</div>
+                            <div class="bottle-size">500 গ্রাম</div>
                         </div>
                         <div class="accessories">
                             <div class="acc-item">
@@ -2139,7 +2568,7 @@
                                 <div class="acc-label">১টি ব্রাশ</div>
                             </div>
                         </div>
-                        <img src="image3.jpg" alt="আলটিমেট কেয়ার কম্বো" class="product-photo" loading="lazy" onclick="openLightbox(this)"
+                        <img src="image3.jpg" alt="আলটিমেট কেয়ার কম্বো" class="product-photo" loading="lazy" onclick="event.stopPropagation(); openLightbox(this)"
                              onload="galleryImgLoaded(this)" onerror="galleryImgFailed(this)">
                     </div>
 
@@ -2149,7 +2578,7 @@
                             <div class="gallery-fallback-icon">🧴</div>
                             <div class="gallery-fallback-label">ক্লিনার</div>
                         </div>
-                        <img src="cleaner.png" alt="ক্লিনার" class="product-photo" loading="lazy" onclick="openLightbox(this)"
+                        <img src="cleaner.png" alt="ক্লিনার" class="product-photo" loading="lazy" onclick="event.stopPropagation(); openLightbox(this)"
                              onload="galleryImgLoaded(this)" onerror="galleryImgFailed(this)">
                     </div>
 
@@ -2157,9 +2586,9 @@
                     <div class="gallery-slide" data-slide="2">
                         <div class="gallery-fallback">
                             <div class="gallery-fallback-icon">🛢️</div>
-                            <div class="gallery-fallback-label">ক্লিনার XL ৫০০ মিলি</div>
+                            <div class="gallery-fallback-label">ভার্নিশ ৫০০ গ্রাম</div>
                         </div>
-                        <img src="polish500.png" alt="ক্লিনার XL ৫০০ মিলি" class="product-photo" loading="lazy" onclick="openLightbox(this)"
+                        <img src="polish500.png" alt="ভার্নিশ ৫০০ গ্রাম" class="product-photo" loading="lazy" onclick="event.stopPropagation(); openLightbox(this)"
                              onload="galleryImgLoaded(this)" onerror="galleryImgFailed(this)">
                     </div>
 
@@ -2167,9 +2596,9 @@
                     <div class="gallery-slide" data-slide="3">
                         <div class="gallery-fallback">
                             <div class="gallery-fallback-icon">🧻</div>
-                            <div class="gallery-fallback-label">তোয়ালে</div>
+                            <div class="gallery-fallback-label">মাইক্রোফাইবার কাপড়</div>
                         </div>
-                        <img src="towel.png" alt="তোয়ালে" class="product-photo" loading="lazy" onclick="openLightbox(this)"
+                        <img src="towel.png" alt="মাইক্রোফাইবার কাপড়" class="product-photo" loading="lazy" onclick="event.stopPropagation(); openLightbox(this)"
                              onload="galleryImgLoaded(this)" onerror="galleryImgFailed(this)">
                     </div>
 
@@ -2179,7 +2608,7 @@
                             <div class="gallery-fallback-icon">🖌️</div>
                             <div class="gallery-fallback-label">ব্রাশ</div>
                         </div>
-                        <img src="brush.png" alt="ব্রাশ" class="product-photo" loading="lazy" onclick="openLightbox(this)"
+                        <img src="brush.png" alt="ব্রাশ" class="product-photo" loading="lazy" onclick="event.stopPropagation(); openLightbox(this)"
                              onload="galleryImgLoaded(this)" onerror="galleryImgFailed(this)">
                     </div>
 
@@ -2189,12 +2618,12 @@
                             <div class="gallery-fallback-icon">🧤</div>
                             <div class="gallery-fallback-label">গ্লাভস</div>
                         </div>
-                        <img src="gloves.png" alt="গ্লাভস" class="product-photo" loading="lazy" onclick="openLightbox(this)"
+                        <img src="gloves.png" alt="গ্লাভস" class="product-photo" loading="lazy" onclick="event.stopPropagation(); openLightbox(this)"
                              onload="galleryImgLoaded(this)" onerror="galleryImgFailed(this)">
                     </div>
 
-                    <button class="gallery-arrow gallery-prev" onclick="galleryNav(this, -1)" aria-label="আগের ছবি">‹</button>
-                    <button class="gallery-arrow gallery-next" onclick="galleryNav(this, 1)" aria-label="পরের ছবি">›</button>
+                    <button class="gallery-arrow gallery-prev" onclick="event.stopPropagation(); galleryNav(this, -1)" aria-label="আগের ছবি">‹</button>
+                    <button class="gallery-arrow gallery-next" onclick="event.stopPropagation(); galleryNav(this, 1)" aria-label="পরের ছবি">›</button>
                     <div class="gallery-dots">
                         <span class="gallery-dot active"></span>
                         <span class="gallery-dot"></span>
@@ -2209,7 +2638,7 @@
                 <div class="card-body">
                     <div class="combo-number">কম্বো প্যাক — ০৩</div>
                     <h3 class="product-name">আলটিমেট কেয়ার কম্বো</h3>
-                    <p class="product-desc">সর্বোচ্চ সুরক্ষার জন্য আমাদের সেরা প্যাকেজ। বড় ক্লিনার বোতল সহ সম্পূর্ণ প্রিমিয়াম সেট।</p>
+                    <p class="product-desc">সর্বোচ্চ সুরক্ষার জন্য আমাদের সেরা প্যাকেজ। বড় ভার্নিশ বোতল সহ সম্পূর্ণ প্রিমিয়াম সেট।</p>
 
                     <div class="includes-title">📦 এই প্যাকেজে আছে:</div>
                     <ul class="includes-list">
@@ -2219,7 +2648,7 @@
                         </li>
                         <li>
                             <div class="check-icon">✓</div>
-                            <span><span class="item-highlight">ক্লিনার ৫০০ মিলি XL</span> — ১টি</span>
+                            <span><span class="item-highlight">ভার্নিশ ৫০০ গ্রাম</span> — ১টি</span>
                         </li>
                         <li>
                             <div class="check-icon">✓</div>
@@ -2231,7 +2660,7 @@
                         </li>
                          <li>
                             <div class="check-icon">✓</div>
-                            <span><span class="item-highlight">রুমাল</span> — ১টি</span>
+                            <span><span class="item-highlight">মাইক্রোফাইবার কাপড়</span> — ১টি</span>
                         </li>
                     </ul>
 
@@ -2250,6 +2679,40 @@
                 </div>
             </div>
 
+        </div>
+    </section>
+
+    <!-- COMPARISON SLIDER SECTION -->
+    <section class="comparison-slider-section">
+        <div class="section-header">
+            <h2>ভার্নিশের <span>জাদুকরী পরিবর্তন</span></h2>
+            <div class="section-line"></div>
+            <p>নিচের স্লাইডারটি বামে-ডানে টেনে আমাদের ফার্নিচার ভার্নিশের বাস্তব কার্যকারিতা দেখুন</p>
+        </div>
+
+        <div class="comparison-slider-container">
+            <div class="comparison-slider" style="--exposure: 50%;">
+                <!-- Before Image (grey/weathered) -->
+                <img src="before.png" alt="Before Varnish" class="slider-img before-img">
+                
+                <!-- After Image (shiny/polished) -->
+                <img src="after.png" alt="After Varnish" class="slider-img after-img">
+                
+                <!-- Divider Line and Handle -->
+                <div class="slider-divider">
+                    <div class="slider-handle">
+                        <span class="handle-arrow">◀</span>
+                        <span class="handle-arrow">▶</span>
+                    </div>
+                </div>
+                
+                <!-- Labels -->
+                <div class="slider-badge badge-before">আগে</div>
+                <div class="slider-badge badge-after">পরে</div>
+                
+                <!-- Invisible Range Slider overlay -->
+                <input type="range" min="0" max="100" value="50" class="slider-input" id="compSlider" aria-label="Before and after comparison slider">
+            </div>
         </div>
     </section>
 
@@ -2465,7 +2928,7 @@
         <div class="footer-divider"></div>
         <p>🪵 ফার্নিচারের যত্নে আমরাই আপনার সেরা সঙ্গী</p>
         <p style="margin-top: 15px;">© ২০২৬ NHindusry | সর্বস্বত্ব সংরক্ষিত</p>
-        <p style="margin-top: 8px;">📞 01700-000000 | 📧 info@NHindusry.com.bd</p>
+        <p style="margin-top: 8px;">📞 01700-000000 | 📧 <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="ef86818980afa1a786818b9a9c9d96c18c8082c18d8b">[email&#160;protected]</a></p>
         <p style="margin-top: 15px; font-size: 11px;"><a href="admin.html" style="color: rgba(255,255,255,0.3); text-decoration: none;" target="_blank">🛡️ Admin Dashboard</a></p>
     </footer>
 
@@ -2482,36 +2945,15 @@
         <div class="lightbox-hint">স্ক্রল করে বা পিঞ্চ করে জুম করুন • টেনে সরান</div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         let supabaseClient = null;
 
-        async function loadEnvAndInitSupabase() {
-            try {
-                const response = await fetch('.env');
-                if (!response.ok) throw new Error('Failed to load .env');
+        function initSupabase() {
+            const supabaseUrl = 'https://mhxobwntkodvufpfkkkp.supabase.co';
+            const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1oeG9id250a29kdnVmcGZra2twIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ1MTI3NjIsImV4cCI6MjEwMDA4ODc2Mn0.v5vAKsaBuuJmlDE4zbpT4crbfUij3rjixZpIBCMo58I';
 
-                const text = await response.text();
-                const env  = {};
-                text.split('\n').forEach(line => {
-                    const trimmed = line.trim();
-                    if (!trimmed || trimmed.startsWith('#')) return;
-                    const idx = trimmed.indexOf('=');
-                    if (idx === -1) return;
-                    const key = trimmed.slice(0, idx).trim();
-                    const val = trimmed.slice(idx + 1).trim().replace(/^['"]|['"]$/g, '');
-                    env[key] = val;
-                });
-
-                const url    = env['SUPABASE_URL'];
-                const anon   = env['SUPABASE_PUBLISHABLE_KEY'];
-                if (!url || !anon) throw new Error('Missing SUPABASE_URL or SUPABASE_PUBLISHABLE_KEY in .env');
-
-                supabaseClient = window.supabase.createClient(url, anon);
-            } catch (e) {
-                // No hardcoded fallback — orders will be saved to localStorage if Supabase is unavailable
-                console.error('[Supabase] Could not initialize from .env:', e.message);
-            }
+            supabaseClient = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
         }
 
         function scrollToProducts() {
@@ -2560,36 +3002,36 @@
         const comboData = {
             1: {
                 name: 'স্টার্টার কেয়ার কম্বো',
-                desc: 'ভার্নিশ ১২০গ্রাম × ২টি + ক্লিনার ৩০০ মিলি + গ্লাভস + ব্রাশ + রুমাল',
+                desc: 'ভার্নিশ ১২০গ্রাম × ২টি + ক্লিনার ৩০০ মিলি + গ্লাভস + ব্রাশ + মাইক্রোফাইবার কাপড়',
                 price: 590,
                 items: [
                     { src: 'cleaner.png', label: 'ক্লিনার' },
                     { src: 'polish240.png', label: 'ভার্নিশ ২৪০ গ্রাম' },
-                    { src: 'towel.png', label: 'রুমাল/তোয়ালে' },
+                    { src: 'towel.png', label: 'মাইক্রোফাইবার কাপড়' },
                     { src: 'brush.png', label: 'ব্রাশ' },
                     { src: 'gloves.png', label: 'গ্লাভস' }
                 ]
             },
             2: {
                 name: 'প্রফেশনাল কেয়ার কম্বো',
-                desc: 'ভার্নিশ ৩০০ গ্রাম + ক্লিনার ৩০০ মিলি + গ্লাভস + ব্রাশ + রুমাল',
+                desc: 'ভার্নিশ ৩০০ গ্রাম + ক্লিনার ৩০০ মিলি + গ্লাভস + ব্রাশ + মাইক্রোফাইবার কাপড়',
                 price: 690,
                 items: [
                     { src: 'cleaner.png', label: 'ক্লিনার' },
                     { src: 'polish300.png', label: 'ভার্নিশ ৩০০ গ্রাম' },
-                    { src: 'towel.png', label: 'রুমাল/তোয়ালে' },
+                    { src: 'towel.png', label: 'মাইক্রোফাইবার কাপড়' },
                     { src: 'brush.png', label: 'ব্রাশ' },
                     { src: 'gloves.png', label: 'গ্লাভস' }
                 ]
             },
             3: {
                 name: 'আলটিমেট কেয়ার কম্বো',
-                desc: 'ভার্নিশ ৩০০ গ্রাম + ক্লিনার XL ৫০০ মিলি + গ্লাভস + ব্রাশ + রুমাল',
+                desc: 'ভার্নিশ ৩০০ গ্রাম + ভার্নিশ ৫০০ গ্রাম + গ্লাভস + ব্রাশ + মাইক্রোফাইবার কাপড়',
                 price: 790,
                 items: [
                     { src: 'cleaner.png', label: 'ক্লিনার' },
-                    { src: 'polish500.png', label: 'ক্লিনার XL ৫০০ মিলি' },
-                    { src: 'towel.png', label: 'রুমাল/তোয়ালে' },
+                    { src: 'polish500.png', label: 'ভার্নিশ ৫০০ গ্রাম' },
+                    { src: 'towel.png', label: 'মাইক্রোফাইবার কাপড়' },
                     { src: 'brush.png', label: 'ব্রাশ' },
                     { src: 'gloves.png', label: 'গ্লাভস' }
                 ]
@@ -2929,11 +3371,52 @@
             }
         }
 
+
+        // Auto-swipe galleries one by one
+        function startAutoSwipe() {
+            setInterval(() => {
+                document.querySelectorAll('.product-visual').forEach(visual => {
+                    const slides = Array.from(visual.querySelectorAll('.gallery-slide'));
+                    const dots = Array.from(visual.querySelectorAll('.gallery-dot'));
+                    const counter = visual.querySelector('.gallery-counter');
+                    
+                    if (slides.length <= 1) return;
+                    
+                    let current = slides.findIndex(s => s.classList.contains('active'));
+                    if (current === -1) current = 0;
+                    
+                    const total = slides.length;
+                    const next = (current + 1) % total;
+                    
+                    slides[current].classList.remove('active');
+                    slides[next].classList.add('active');
+                    
+                    if (dots[current]) dots[current].classList.remove('active');
+                    if (dots[next]) dots[next].classList.add('active');
+                    
+                    if (counter) counter.textContent = `${next + 1}/${total}`;
+                });
+            }, 3000); // Swipe every 3 seconds
+        }
+
+        // Bind before-after comparison slider
+        function initComparisonSlider() {
+            const sliderInput = document.getElementById('compSlider');
+            if (sliderInput) {
+                sliderInput.addEventListener('input', (e) => {
+                    const percentage = e.target.value;
+                    sliderInput.parentElement.style.setProperty('--exposure', `${percentage}%`);
+                });
+            }
+        }
+
         // Initialize the order builder on page load
         async function initPage() {
             selectCombo(1);
-            await loadEnvAndInitSupabase();
+            initSupabase();
             await checkStockStatus();
+            startAutoSwipe();
+            initComparisonSlider();
         }
         initPage();
 
@@ -3058,5 +3541,5 @@
         });
     </script>
 
-</body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a1e11fbb2c1e26ba',t:'MTc4NDU0MTY3OQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
