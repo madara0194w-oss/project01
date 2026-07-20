@@ -776,9 +776,6 @@
                 <div class="header-right">
                     <span class="header-title-badge">🛡️ কন্ট্রোল প্যানেল</span>
                     <span class="admin-email-display" id="adminEmailDisplay">লোড হচ্ছে...</span>
-                    <button class="btn btn-secondary" onclick="seedMockOrders()">
-                        🧪 ডেমো অর্ডার
-                    </button>
                     <button class="btn btn-logout" onclick="handleLogout()">
                         🚪 লগআউট
                     </button>
@@ -1285,18 +1282,6 @@
             if (!confirm('অর্ডারটি স্থায়ীভাবে মুছে ফেলবেন?')) return;
             const { error } = await supabaseClient.from('orders').delete().eq('id', id);
             if (error) { alert('অর্ডার মুছা যায়নি।'); return; }
-            await fetchOrders();
-        }
-
-        async function seedMockOrders() {
-            const mock = [
-                { name:'আরিফুল ইসলাম',   mobile:'01712345678', address:'বাসা ২৪, রোড ৩, মিরপুর, ঢাকা',      combo_id:1, combo_name:'স্টার্টার কেয়ার কম্বো',    delivery_type:'ঢাকার ভিতরে', delivery_charge:80,  total_price:670, status:'pending' },
-                { name:'তাহমিনা চৌধুরী', mobile:'01898765432', address:'জিইসি মোড়, বাগমনিরাম রোড, চট্টগ্রাম', combo_id:2, combo_name:'প্রফেশনাল কেয়ার কম্বো', delivery_type:'ঢাকার বাইরে', delivery_charge:130, total_price:820, status:'confirmed' },
-                { name:'মোঃ রফিকুল আলম', mobile:'01555667788', address:'হোল্ডিং ৪৫, শিবগঞ্জ বাজার, সিলেট',   combo_id:3, combo_name:'আলটিমেট কেয়ার কম্বো',   delivery_type:'ঢাকার বাইরে', delivery_charge:130, total_price:920, status:'pending' },
-            ];
-            const { error } = await supabaseClient.from('orders').insert(mock);
-            if (error) { alert('ডেমো ডেটা যুক্ত করা যায়নি: ' + error.message); return; }
-            alert('৩টি ডেমো অর্ডার যুক্ত হয়েছে!');
             await fetchOrders();
         }
 

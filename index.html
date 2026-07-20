@@ -191,6 +191,24 @@
             font-size: 20px;
         }
 
+        .hero-cta {
+            margin-top: 24px;
+        }
+
+        .hero-cta .btn-cta-primary {
+            padding: 14px 36px;
+            font-size: 16px;
+        }
+
+        /* Responsive visibility classes */
+        .desktop-only { display: inline-flex; }
+        .mobile-only { display: none; }
+
+        @media (max-width: 768px) {
+            .desktop-only { display: none !important; }
+            .mobile-only { display: block !important; }
+        }
+
         /* ===== WOOD DIVIDER ===== */
         .wood-divider {
             height: 8px;
@@ -1072,6 +1090,70 @@
         .price-row.total .price-row-value {
             font-family: 'Tiro Bangla', serif;
             font-size: 26px;
+        }
+
+        /* Discount pricing styles */
+        .price-row #priceComboValue {
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .original-price {
+            text-decoration: line-through;
+            color: var(--gray);
+            font-size: 14px;
+            font-weight: 400;
+        }
+
+        .discounted-price {
+            color: var(--primary-dark);
+            font-weight: 700;
+            font-size: 16px;
+            font-family: 'Tiro Bangla', serif;
+        }
+
+        .savings-row {
+            border-top: 1px dashed #D8C4A0;
+            margin-top: 8px;
+            padding-top: 10px;
+            font-size: 14px;
+            color: var(--success);
+            font-weight: 600;
+        }
+
+        .savings-value {
+            font-family: 'Tiro Bangla', serif;
+            font-size: 20px;
+            color: var(--success);
+            font-weight: 700;
+        }
+
+        /* Return policy notice */
+        .return-policy-notice {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: linear-gradient(135deg, rgba(46, 125, 50, 0.1), rgba(76, 175, 80, 0.08));
+            border: 1px solid rgba(46, 125, 50, 0.2);
+            border-radius: 12px;
+            padding: 14px 18px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: var(--success);
+            font-weight: 500;
+            line-height: 1.5;
+        }
+
+        .return-icon {
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .return-text {
+            text-align: center;
         }
 
         .cod-badge {
@@ -2220,15 +2302,33 @@ src="https://www.facebook.com/tr?id=4416875668587350&ev=PageView&noscript=1"
             <p class="hero-subtitle">পেশাদার মানের ভার্নিশ ও ক্লিনারের শক্তিশালী সমন্বয় — আপনার কাঠের ফার্নিচারকে করুন চকচকে ও টেকসই</p>
 
             <div class="hero-features">
-                <div class="hero-feature"><span>🛡️</span> দীর্ঘস্থায়ী সুরক্ষা</div>
-                <div class="hero-feature"><span>✨</span> উজ্জ্বল চকচকে ফিনিশ</div>
-                <div class="hero-feature"><span>🌿</span> পরিবেশবান্ধব</div>
-                <div class="hero-feature"><span>🚀</span> সহজ প্রয়োগ</div>
+                <div class="hero-feature desktop-only"><span>🛡️</span> দীর্ঘস্থায়ী সুরক্ষা</div>
+                <div class="hero-feature desktop-only"><span>✨</span> উজ্জ্বল চকচকে ফিনিশ</div>
+                <div class="hero-feature desktop-only"><span>🌿</span> পরিবেশবান্ধব</div>
+                <div class="hero-feature desktop-only"><span>🚀</span> সহজ প্রয়োগ</div>
+            </div>
+            <div class="hero-cta desktop-only">
+                <button class="btn-cta-primary" onclick="scrollToOrderBuilder()">এখনই অর্ডার করুন!</button>
+            </div>
+            <div class="hero-cta mobile-only">
+                <button class="btn-cta-primary" onclick="scrollToOrderBuilder()">এখনই অর্ডার করুন!</button>
             </div>
         </div>
     </section>
 
     <div class="wood-divider"></div>
+
+    <script>
+        function galleryImgLoaded(img) {
+            img.style.opacity = 1;
+            img.closest('.gallery-slide').classList.add('has-photo');
+        }
+
+        function galleryImgFailed(img) {
+            img.style.display = 'none';
+            img.closest('.gallery-slide').classList.remove('has-photo');
+        }
+    </script>
 
     <!-- PRODUCTS -->
     <section class="products-section">
@@ -2783,7 +2883,10 @@ src="https://www.facebook.com/tr?id=4416875668587350&ev=PageView&noscript=1"
             <div class="price-breakdown">
                 <div class="price-row">
                     <span>কম্বো মূল্য</span>
-                    <span id="priceComboValue">৳590</span>
+                    <span id="priceComboValue">
+                        <span class="original-price" id="priceComboOriginal">৳740</span>
+                        <span class="discounted-price" id="priceComboDiscounted">৳590</span>
+                    </span>
                 </div>
                 <div class="price-row">
                     <span>ডেলিভারি চার্জ</span>
@@ -2793,6 +2896,12 @@ src="https://www.facebook.com/tr?id=4416875668587350&ev=PageView&noscript=1"
                     <span>সর্বমোট</span>
                     <span class="price-row-value" id="priceTotalValue">৳670</span>
                 </div>
+                
+            </div>
+
+            <div class="return-policy-notice">
+                <span class="return-icon">✅</span>
+                <span class="return-text">পণ্য হাতে পেয়ে যাচাই করুন — পছন্দ না হলে ডেলিভারি ম্যানকে ফেরত দিন।</span>
             </div>
 
             <div class="cod-badge">💵 পেমেন্ট পদ্ধতি: ক্যাশ অন ডেলিভারি (পণ্য হাতে পেয়ে টাকা প্রদান করুন)</div>
@@ -2960,21 +3069,15 @@ src="https://www.facebook.com/tr?id=4416875668587350&ev=PageView&noscript=1"
             document.querySelector('.products-section').scrollIntoView({ behavior: 'smooth' });
         }
 
+        function scrollToOrderBuilder() {
+            document.getElementById('orderBuilder').scrollIntoView({ behavior: 'smooth' });
+        }
+
         function callUs() {
             window.location.href = 'tel:01700000000';
         }
 
         /* ===================== PRODUCT GALLERY ===================== */
-
-        function galleryImgLoaded(img) {
-            img.style.opacity = 1;
-            img.closest('.gallery-slide').classList.add('has-photo');
-        }
-
-        function galleryImgFailed(img) {
-            img.style.display = 'none';
-            img.closest('.gallery-slide').classList.remove('has-photo');
-        }
 
         function galleryNav(btn, direction) {
             const visual = btn.closest('.product-visual');
@@ -3004,6 +3107,7 @@ src="https://www.facebook.com/tr?id=4416875668587350&ev=PageView&noscript=1"
                 name: 'স্টার্টার কেয়ার কম্বো',
                 desc: 'ভার্নিশ ১২০গ্রাম × ২টি + ক্লিনার ৩০০ মিলি + গ্লাভস + ব্রাশ + মাইক্রোফাইবার কাপড়',
                 price: 590,
+                originalPrice: 740,
                 items: [
                     { src: 'cleaner.png', label: 'ক্লিনার' },
                     { src: 'polish240.png', label: 'ভার্নিশ ২৪০ গ্রাম' },
@@ -3016,6 +3120,7 @@ src="https://www.facebook.com/tr?id=4416875668587350&ev=PageView&noscript=1"
                 name: 'প্রফেশনাল কেয়ার কম্বো',
                 desc: 'ভার্নিশ ৩০০ গ্রাম + ক্লিনার ৩০০ মিলি + গ্লাভস + ব্রাশ + মাইক্রোফাইবার কাপড়',
                 price: 690,
+                originalPrice: 890,
                 items: [
                     { src: 'cleaner.png', label: 'ক্লিনার' },
                     { src: 'polish300.png', label: 'ভার্নিশ ৩০০ গ্রাম' },
@@ -3028,6 +3133,7 @@ src="https://www.facebook.com/tr?id=4416875668587350&ev=PageView&noscript=1"
                 name: 'আলটিমেট কেয়ার কম্বো',
                 desc: 'ভার্নিশ ৩০০ গ্রাম + ভার্নিশ ৫০০ গ্রাম + গ্লাভস + ব্রাশ + মাইক্রোফাইবার কাপড়',
                 price: 790,
+                originalPrice: 1040,
                 items: [
                     { src: 'cleaner.png', label: 'ক্লিনার' },
                     { src: 'polish500.png', label: 'ভার্নিশ ৫০০ গ্রাম' },
@@ -3110,10 +3216,28 @@ src="https://www.facebook.com/tr?id=4416875668587350&ev=PageView&noscript=1"
             const combo = comboData[orderState.combo];
             const delivery = deliveryData[orderState.delivery];
             const total = combo.price + delivery.charge;
+            const savings = (combo.originalPrice || combo.price) - combo.price;
 
-            document.getElementById('priceComboValue').textContent = `৳${combo.price}`;
+            // Update combo price with original (strikethrough) and discounted
+            const comboValueEl = document.getElementById('priceComboValue');
+            const originalEl = document.getElementById('priceComboOriginal');
+            const discountedEl = document.getElementById('priceComboDiscounted');
+
+            if (originalEl && discountedEl) {
+                originalEl.textContent = `৳${combo.originalPrice || combo.price}`;
+                discountedEl.textContent = `৳${combo.price}`;
+            } else {
+                comboValueEl.textContent = `৳${combo.price}`;
+            }
+
             document.getElementById('priceDeliveryValue').textContent = `৳${delivery.charge} (${delivery.label})`;
             document.getElementById('priceTotalValue').textContent = `৳${total}`;
+
+            // Update savings
+            const savingsEl = document.getElementById('priceSavingsValue');
+            if (savingsEl) {
+                savingsEl.textContent = `৳${savings}`;
+            }
         }
 
         async function checkStockStatus() {
