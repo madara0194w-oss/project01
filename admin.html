@@ -1,0 +1,1359 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NHindustry - অ্যাডমিন ড্যাশবোর্ড</title>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        /* Keep new-password recovery UI hidden on admin.html login page.
+           Forgot-password (reset-request) UI is shown when user taps the link. */
+        #resetNewPasswordPanel { display: none !important; }
+
+        :root {
+            --bg-dark: #120905;
+            --panel-bg: #1c110b;
+            --panel-border: rgba(212, 160, 23, 0.15);
+            --primary: #8B4513;
+            --primary-light: #A0522D;
+            --accent: #D4A017;
+            --accent-light: #F0C040;
+            --text-light: #F5EFE6;
+            --text-muted: #A09080;
+            --success: #4CAF50;
+            --success-dark: #2E7D32;
+            --danger: #ef5350;
+            --white: #FFFFFF;
+        }
+
+        body {
+            font-family: 'Hind Siliguri', 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            min-height: 100vh;
+        }
+
+        /* ===================== LOGIN SCREEN ===================== */
+        #loginScreen {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            background: radial-gradient(ellipse at top, #2a1508 0%, #120905 60%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        #loginScreen::before {
+            content: '';
+            position: absolute;
+            top: -200px;
+            left: -200px;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(212,160,23,0.06) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        #loginScreen::after {
+            content: '';
+            position: absolute;
+            bottom: -200px;
+            right: -100px;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(139,69,19,0.08) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .login-card {
+            background: rgba(28, 17, 11, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(212, 160, 23, 0.25);
+            border-radius: 28px;
+            padding: 50px 44px 44px;
+            width: 100%;
+            max-width: 430px;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255,255,255,0.03) inset;
+            position: relative;
+            z-index: 1;
+            animation: loginFadeIn 0.5s ease;
+        }
+
+        @keyframes loginFadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .login-logo {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .login-logo .brand {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--white);
+        }
+
+        .login-logo .brand span {
+            color: var(--accent-light);
+        }
+
+        .login-badge {
+            display: inline-block;
+            background: rgba(212,160,23,0.12);
+            border: 1px solid rgba(212,160,23,0.3);
+            color: var(--accent-light);
+            padding: 5px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin-top: 8px;
+            margin-bottom: 36px;
+        }
+
+        .login-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--white);
+            margin-bottom: 6px;
+        }
+
+        .login-subtitle {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 18px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(212, 160, 23, 0.2);
+            border-radius: 12px;
+            color: var(--text-light);
+            font-family: 'Hind Siliguri', sans-serif;
+            font-size: 15px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            border-color: var(--accent);
+            background: rgba(255,255,255,0.08);
+            box-shadow: 0 0 0 3px rgba(212,160,23,0.1);
+        }
+
+        .form-group input::placeholder {
+            color: rgba(160,144,128,0.6);
+        }
+
+        .login-error {
+            background: rgba(239, 83, 80, 0.12);
+            border: 1px solid rgba(239, 83, 80, 0.3);
+            color: #ff8a80;
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-size: 13px;
+            margin-bottom: 18px;
+            display: none;
+        }
+
+        .login-error.visible {
+            display: block;
+            animation: shake 0.3s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25%       { transform: translateX(-6px); }
+            75%       { transform: translateX(6px); }
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--accent) 0%, #b8860b 100%);
+            color: #1a0a00;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Hind Siliguri', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(212,160,23,0.3);
+            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-login:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 28px rgba(212,160,23,0.45);
+        }
+
+        .btn-login:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .login-spinner {
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(26,10,0,0.3);
+            border-top-color: #1a0a00;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ===================== DASHBOARD ===================== */
+        #dashboard {
+            display: none;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        /* HEADER */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            border-bottom: 1px solid var(--panel-border);
+            padding-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .logo-text {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--white);
+            text-decoration: none;
+        }
+
+        .logo-text span { color: var(--accent-light); }
+
+        .header-title-badge {
+            background: rgba(212,160,23,0.15);
+            border: 1px solid var(--accent);
+            color: var(--accent-light);
+            padding: 6px 18px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .admin-email-display {
+            font-size: 13px;
+            color: var(--text-muted);
+            background: rgba(255,255,255,0.05);
+            padding: 6px 14px;
+            border-radius: 20px;
+            border: 1px solid var(--panel-border);
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-family: 'Hind Siliguri', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-logout {
+            background: rgba(239, 83, 80, 0.12);
+            color: #ff8a80;
+            border: 1px solid rgba(239, 83, 80, 0.3);
+        }
+
+        .btn-logout:hover {
+            background: var(--danger);
+            color: var(--white);
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.07);
+            color: var(--text-light);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .btn-secondary:hover { background: rgba(255,255,255,0.14); }
+
+        /* STATS */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 20px;
+            margin-bottom: 35px;
+        }
+
+        .stat-card {
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 20px;
+            padding: 25px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 6px 25px rgba(0,0,0,0.25);
+        }
+
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            top: 0; right: 0;
+            width: 80px; height: 80px;
+            background: radial-gradient(circle, rgba(212,160,23,0.05) 0%, transparent 70%);
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .stat-value {
+            font-size: 30px;
+            font-weight: 700;
+            color: var(--white);
+        }
+
+        .stat-icon {
+            position: absolute;
+            right: 22px; bottom: 20px;
+            font-size: 30px;
+            opacity: 0.18;
+        }
+
+        /* CONTROLS */
+        .controls-section {
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 18px;
+            padding: 22px 25px;
+            margin-bottom: 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 18px;
+            box-shadow: 0 6px 25px rgba(0,0,0,0.2);
+        }
+
+        .stock-control { display: flex; align-items: center; gap: 14px; }
+        .stock-label { font-size: 16px; font-weight: 700; }
+
+        .stock-status-badge {
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .stock-status-badge.in-stock {
+            background: rgba(76,175,80,0.15);
+            color: var(--success);
+            border: 1px solid rgba(76,175,80,0.3);
+        }
+
+        .stock-status-badge.out-stock {
+            background: rgba(239,83,80,0.15);
+            color: var(--danger);
+            border: 1px solid rgba(239,83,80,0.3);
+        }
+
+        /* Toggle Switch */
+        .switch { position: relative; display: inline-block; width: 58px; height: 32px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+
+        .slider {
+            position: absolute; cursor: pointer;
+            inset: 0;
+            background-color: #4a3325;
+            transition: .35s;
+            border-radius: 32px;
+            border: 1px solid rgba(212,160,23,0.25);
+        }
+
+        .slider:before {
+            position: absolute; content: "";
+            height: 24px; width: 24px;
+            left: 3px; bottom: 3px;
+            background-color: var(--text-light);
+            transition: .35s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider { background-color: var(--success-dark); }
+        input:checked + .slider:before { transform: translateX(26px); }
+
+        /* TABLE PANEL */
+        .table-panel {
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 22px;
+            padding: 28px;
+            box-shadow: 0 6px 25px rgba(0,0,0,0.2);
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 22px;
+            flex-wrap: wrap;
+            gap: 18px;
+        }
+
+        .search-filter-box {
+            display: flex;
+            gap: 12px;
+            flex-grow: 1;
+            max-width: 680px;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            flex-grow: 1;
+            min-width: 240px;
+            padding: 11px 18px;
+            border-radius: 11px;
+            border: 1px solid var(--panel-border);
+            background: var(--bg-dark);
+            color: var(--text-light);
+            font-family: 'Hind Siliguri', sans-serif;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .search-input:focus { border-color: var(--accent); }
+
+        .filter-tabs {
+            display: flex;
+            background: var(--bg-dark);
+            border: 1px solid var(--panel-border);
+            padding: 4px;
+            border-radius: 11px;
+        }
+
+        .filter-tab {
+            padding: 7px 18px;
+            border-radius: 8px;
+            color: var(--text-muted);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-tab.active { background: var(--accent); color: #1a0a00; }
+
+        /* Table */
+        .table-container { width: 100%; overflow-x: auto; }
+
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+
+        th {
+            padding: 14px 18px;
+            border-bottom: 2px solid var(--panel-border);
+            color: var(--text-muted);
+            font-weight: 700;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        td {
+            padding: 16px 18px;
+            border-bottom: 1px solid rgba(212,160,23,0.08);
+            font-size: 14px;
+            vertical-align: middle;
+        }
+
+        tr:hover td { background: rgba(255,255,255,0.018); }
+
+        .client-info { display: flex; flex-direction: column; gap: 3px; }
+        .client-name { font-weight: 700; color: var(--white); }
+        .client-phone { color: var(--accent-light); font-size: 13px; text-decoration: none; }
+        .client-phone:hover { text-decoration: underline; }
+
+        .client-addr {
+            font-size: 12px;
+            color: var(--text-muted);
+            max-width: 240px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .combo-info { display: flex; flex-direction: column; }
+        .combo-name { font-weight: 600; color: var(--text-light); }
+        .delivery-charge { font-size: 12px; color: var(--text-muted); }
+        .order-date { font-size: 12px; color: var(--text-muted); }
+        .order-total { font-weight: 700; font-size: 15px; color: var(--white); }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 11px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .status-badge.pending {
+            background: rgba(212,160,23,0.14);
+            color: var(--accent-light);
+            border: 1px solid rgba(212,160,23,0.28);
+        }
+
+        .status-badge.confirmed {
+            background: rgba(76,175,80,0.14);
+            color: var(--success);
+            border: 1px solid rgba(76,175,80,0.28);
+        }
+
+        .action-btns { display: flex; gap: 8px; }
+
+        .btn-action {
+            padding: 5px 11px;
+            border-radius: 6px;
+            font-size: 12px;
+            border: none;
+            cursor: pointer;
+            font-family: 'Hind Siliguri', sans-serif;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-action.confirm { background: var(--success-dark); color: var(--white); }
+        .btn-action.confirm:hover { background: var(--success); }
+
+        .btn-action.delete {
+            background: rgba(239,83,80,0.13);
+            color: var(--danger);
+            border: 1px solid rgba(239,83,80,0.28);
+        }
+
+        .btn-action.delete:hover { background: var(--danger); color: var(--white); }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-icon { font-size: 48px; margin-bottom: 14px; }
+
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            #dashboard { padding: 15px; }
+            .panel-header { flex-direction: column; align-items: stretch; }
+            .search-filter-box { flex-direction: column; }
+            .filter-tabs { justify-content: center; }
+            .header-right { flex-wrap: wrap; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ======================== LOGIN SCREEN ======================== -->
+    <div id="loginScreen">
+        <div class="login-card">
+            <div class="login-logo">
+                <div class="brand">NH<span>industry</span></div>
+                <div class="login-badge">🛡️ অ্যাডমিন অ্যাক্সেস</div>
+            </div>
+
+            <div class="login-title">স্বাগতম</div>
+            <div class="login-subtitle">ড্যাশবোর্ডে প্রবেশ করতে আপনার অ্যাডমিন তথ্য প্রদান করুন।</div>
+
+            <div class="login-error" id="loginError">⚠️ ইমেইল বা পাসওয়ার্ড সঠিক নয়। আবার চেষ্টা করুন।</div>
+
+            <div class="form-group">
+                <label for="loginEmail">ইমেইল</label>
+                <input type="email" id="loginEmail" placeholder="admin@yourdomain.com" autocomplete="username">
+            </div>
+
+            <div class="form-group">
+                <label for="loginPassword">পাসওয়ার্ড</label>
+                <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password">
+            </div>
+
+            <button class="btn-login" id="loginBtn" onclick="handleLogin()">
+                <span id="loginBtnText">🔐 লগইন করুন</span>
+            </button>
+
+            <div style="margin-top: 14px; text-align: center;">
+                <button
+                    type="button"
+                    id="forgotPasswordBtn"
+                    style="background: transparent; border: none; color: rgba(240,192,64,0.95); font-weight: 700; cursor: pointer; font-size: 13px;"
+                    onclick="showForgotPassword()"
+                >
+                    পাসওয়ার্ড ভুলে গেছেন?
+                </button>
+            </div>
+
+            <!-- ======================== FORGOT PASSWORD PANEL ======================== -->
+            <div id="forgotPasswordPanel" style="display:none; margin-top: 10px;">
+                <div style="text-align:center; margin-bottom: 10px;">
+                    <div style="font-size: 22px; font-weight: 800; color: var(--white);">পাসওয়ার্ড রিসেট</div>
+                    <div style="font-size: 13px; color: var(--text-muted); margin-top: 6px;">
+                        আপনার ইমেইলে রিসেট লিংক পাঠানো হবে।
+                    </div>
+                </div>
+
+                <div class="login-error" id="resetError" style="display:none;"></div>
+                <div
+                    class="login-error"
+                    id="resetSuccess"
+                    style="background: rgba(76,175,80,0.12); border: 1px solid rgba(76,175,80,0.28); color: #8cffb1; display:none;"
+                ></div>
+
+                <div class="form-group" style="margin-top: 16px;">
+                    <label for="resetEmail">ইমেইল</label>
+                    <input type="email" id="resetEmail" placeholder="admin@yourdomain.com" autocomplete="email">
+                </div>
+
+                <button class="btn-login" id="resetBtn" onclick="handleResetPassword()">
+                    <span id="resetBtnText">📩 রিসেট লিংক পাঠান</span>
+                </button>
+
+                <div style="margin-top: 12px; text-align: center;">
+                    <button
+                        type="button"
+                        style="background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); color: var(--text-light); border-radius: 12px; padding: 10px 18px; font-family: 'Hind Siliguri', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer;"
+                        onclick="backToLogin()"
+                    >
+                        ⟵ ফিরে যান
+                    </button>
+                </div>
+            </div>
+
+            <!-- ======================== RESET NEW PASSWORD PANEL (Recovery) ======================== -->
+            <div id="resetNewPasswordPanel" style="display:none; margin-top: 10px;">
+                <div style="text-align:center; margin-bottom: 10px;">
+                    <div style="font-size: 22px; font-weight: 800; color: var(--white);">নতুন পাসওয়ার্ড সেট করুন</div>
+                    <div style="font-size: 13px; color: var(--text-muted); margin-top: 6px;">
+                        রিসেট লিংকটি সম্পূর্ণ করতে নতুন পাসওয়ার্ড দিন।
+                    </div>
+                </div>
+
+                <div class="login-error" id="newPasswordError" style="display:none;"></div>
+                <div
+                    class="login-error"
+                    id="newPasswordSuccess"
+                    style="background: rgba(76,175,80,0.12); border: 1px solid rgba(76,175,80,0.28); color: #8cffb1; display:none;"
+                ></div>
+
+                <div class="form-group" style="margin-top: 16px;">
+                    <label for="newPassword">নতুন পাসওয়ার্ড</label>
+                    <input type="password" id="newPassword" placeholder="••••••••" autocomplete="new-password">
+                </div>
+
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label for="confirmPassword">পাসওয়ার্ড নিশ্চিত করুন</label>
+                    <input type="password" id="confirmPassword" placeholder="••••••••" autocomplete="new-password">
+                </div>
+
+                <button class="btn-login" id="saveNewPasswordBtn" onclick="handleSaveNewPassword()">
+                    <span id="saveNewPasswordBtnText">💾 নতুন পাসওয়ার্ড সেভ করুন</span>
+                </button>
+
+                <div style="margin-top: 12px; text-align: center;">
+                    <button
+                        type="button"
+                        style="background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); color: var(--text-light); border-radius: 12px; padding: 10px 18px; font-family: 'Hind Siliguri', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer;"
+                        onclick="backToLogin()"
+                    >
+                        ⟵ লগইনে ফিরে যান
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+            </div>
+
+            <!-- ======================== RESET NEW PASSWORD PANEL (Recovery) ======================== -->
+            <div id="resetNewPasswordPanel" style="display:none; margin-top: 10px;">
+                <div style="text-align:center; margin-bottom: 10px;">
+                    <div style="font-size: 22px; font-weight: 800; color: var(--white);">নতুন পাসওয়ার্ড সেট করুন</div>
+                    <div style="font-size: 13px; color: var(--text-muted); margin-top: 6px;">
+                        রিসেট লিংকটি সম্পূর্ণ করতে নতুন পাসওয়ার্ড দিন।
+                    </div>
+                </div>
+
+                <div class="login-error" id="newPasswordError" style="display:none;"></div>
+                <div
+                    class="login-error"
+                    id="newPasswordSuccess"
+                    style="background: rgba(76,175,80,0.12); border: 1px solid rgba(76,175,80,0.28); color: #8cffb1; display:none;"
+                ></div>
+
+                <div class="form-group" style="margin-top: 16px;">
+                    <label for="newPassword">নতুন পাসওয়ার্ড</label>
+                    <input type="password" id="newPassword" placeholder="••••••••" autocomplete="new-password">
+                </div>
+
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label for="confirmPassword">পাসওয়ার্ড নিশ্চিত করুন</label>
+                    <input type="password" id="confirmPassword" placeholder="••••••••" autocomplete="new-password">
+                </div>
+
+                <button class="btn-login" id="saveNewPasswordBtn" onclick="handleSaveNewPassword()">
+                    <span id="saveNewPasswordBtnText">💾 নতুন পাসওয়ার্ড সেভ করুন</span>
+                </button>
+
+                <div style="margin-top: 12px; text-align: center;">
+                    <button
+                        type="button"
+                        style="background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); color: var(--text-light); border-radius: 12px; padding: 10px 18px; font-family: 'Hind Siliguri', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer;"
+                        onclick="backToLogin()"
+                    >
+                        ⟵ লগইনে ফিরে যান
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- ======================== DASHBOARD ======================== -->
+    <div id="dashboard">
+        <div class="container">
+
+            <!-- HEADER -->
+            <header>
+                <div>
+                    <a href="Nhindusty.html" class="logo-text" target="_blank">NH<span>industry</span></a>
+                    <p style="color: var(--text-muted); font-size: 13px; margin-top: 4px;">🪵 কাঠের যত্নে প্রিমিয়াম কোয়ালিটি কন্ট্রোল</p>
+                </div>
+                <div class="header-right">
+                    <span class="header-title-badge">🛡️ কন্ট্রোল প্যানেল</span>
+                    <span class="admin-email-display" id="adminEmailDisplay">লোড হচ্ছে...</span>
+                    <button class="btn btn-secondary" onclick="seedMockOrders()">
+                        🧪 ডেমো অর্ডার
+                    </button>
+                    <button class="btn btn-logout" onclick="handleLogout()">
+                        🚪 লগআউট
+                    </button>
+                </div>
+            </header>
+
+            <!-- STATS -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">সর্বমোট অর্ডার</div>
+                    <div class="stat-value" id="statTotalOrders">—</div>
+                    <div class="stat-icon">📦</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">মোট বিক্রয় (৳)</div>
+                    <div class="stat-value" id="statTotalSales">—</div>
+                    <div class="stat-icon">💰</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">অপেক্ষমাণ অর্ডার</div>
+                    <div class="stat-value" id="statPendingOrders">—</div>
+                    <div class="stat-icon">⏳</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">কনফার্মড অর্ডার</div>
+                    <div class="stat-value" id="statConfirmedOrders">—</div>
+                    <div class="stat-icon">✅</div>
+                </div>
+            </div>
+
+            <!-- STOCK CONTROLLER -->
+            <div class="controls-section">
+                <div class="stock-control">
+                    <span class="stock-label">পণ্য স্টক স্থিতি:</span>
+                    <span class="stock-status-badge in-stock" id="stockStatusBadge">স্টকে আছে (In Stock)</span>
+                </div>
+                <div>
+                    <label class="switch">
+                        <input type="checkbox" id="stockToggle" checked onchange="toggleStock()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- TABLE PANEL -->
+            <div class="table-panel">
+                <div class="panel-header">
+                    <h3 style="font-family: 'Tiro Bangla', serif; font-size: 21px;">গ্রাহকের অর্ডার তালিকা</h3>
+                    <div class="search-filter-box">
+                        <input type="text" class="search-input" id="searchInput" oninput="renderOrders()"
+                               placeholder="গ্রাহকের নাম বা মোবাইল দিয়ে খুঁজুন...">
+                        <div class="filter-tabs">
+                            <div class="filter-tab active" data-filter="all"       onclick="setFilter('all')">সব</div>
+                            <div class="filter-tab"        data-filter="pending"   onclick="setFilter('pending')">অপেক্ষমাণ</div>
+                            <div class="filter-tab"        data-filter="confirmed" onclick="setFilter('confirmed')">নিশ্চিতকৃত</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table id="ordersTable">
+                        <thead>
+                            <tr>
+                                <th>অর্ডার ID / তারিখ</th>
+                                <th>গ্রাহকের তথ্য</th>
+                                <th>অর্ডার প্যাকেজ</th>
+                                <th>ডেলিভারি</th>
+                                <th>মোট মূল্য</th>
+                                <th>স্ট্যাটাস</th>
+                                <th>অ্যাকশন</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ordersTableBody"></tbody>
+                    </table>
+                </div>
+
+                <div class="empty-state" id="emptyState" style="display:none;">
+                    <div class="empty-icon">📦</div>
+                    <p>কোনো অর্ডার পাওয়া যায়নি</p>
+                </div>
+            </div>
+
+        </div><!-- /container -->
+    </div><!-- /dashboard -->
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        'use strict';
+
+        // ================================================================
+        //  SUPABASE INIT  (reads .env at runtime; no secrets in source)
+        // ================================================================
+        let supabaseClient = null;
+
+        async function initSupabase() {
+            try {
+                const res = await fetch('.env');
+                if (!res.ok) throw new Error('Cannot fetch .env');
+                const text = await res.text();
+                const env = {};
+                text.split('\n').forEach(line => {
+                    const trimmed = line.trim();
+                    if (!trimmed || trimmed.startsWith('#')) return;
+                    const idx = trimmed.indexOf('=');
+                    if (idx === -1) return;
+                    const key = trimmed.slice(0, idx).trim();
+                    const val = trimmed.slice(idx + 1).trim().replace(/^['"]|['"]$/g, '');
+                    env[key] = val;
+                });
+
+                const url    = env['SUPABASE_URL'];
+                const anon   = env['SUPABASE_PUBLISHABLE_KEY'];
+                if (!url || !anon) throw new Error('Missing SUPABASE_URL or SUPABASE_PUBLISHABLE_KEY in .env');
+
+                supabaseClient = window.supabase.createClient(url, anon, {
+                    auth: { persistSession: true, autoRefreshToken: true }
+                });
+            } catch (err) {
+                console.error('[Supabase] Init failed:', err.message);
+                // NOTE: No hardcoded fallback keys intentionally.
+                // If .env cannot be loaded, the page will show the login screen
+                // but Supabase operations will fail safely until configuration is fixed.
+            }
+        }
+
+        // ================================================================
+        //  AUTH
+        // ================================================================
+        function isPasswordRecoveryRedirect() {
+            // Supabase password recovery links often land with tokens in hash or specific query params.
+            const hash = window.location.hash || '';
+            const search = window.location.search || '';
+
+            const hasRecoveryTokens = hash.includes('access_token=') || hash.includes('refresh_token=');
+            const hasRecoveryType = search.includes('type=recovery') || search.includes('type=magiclink');
+
+            return hasRecoveryTokens || hasRecoveryType;
+        }
+
+        async function checkSession() {
+            if (!supabaseClient) {
+                showLoginScreen('সার্ভার কনফিগারেশন সমস্যা। .env ফাইল চেক করুন।');
+                return;
+            }
+
+            const { data: { session } } = await supabaseClient.auth.getSession();
+
+            // Prevent admin dashboard auto-redirect during password recovery flows.
+            // Users should explicitly login after resetting password.
+            if (isPasswordRecoveryRedirect()) {
+                showLoginScreen('পাসওয়ার্ড রিসেট করার পর লগইন করুন।');
+                return;
+            }
+
+            if (session) {
+                showDashboard(session.user.email);
+            } else {
+                showLoginScreen();
+            }
+        }
+
+        async function handleLogin() {
+            const email    = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            const btn      = document.getElementById('loginBtn');
+            const errBox   = document.getElementById('loginError');
+
+            errBox.classList.remove('visible');
+
+            if (!email || !password) {
+                showLoginError('ইমেইল এবং পাসওয়ার্ড পূরণ করুন।');
+                return;
+            }
+
+            // Show spinner
+            btn.disabled = true;
+            document.getElementById('loginBtnText').innerHTML =
+                '<div class="login-spinner"></div> যাচাই করা হচ্ছে...';
+
+            try {
+                const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+
+                if (error || !data.session) {
+                    showLoginError('ইমেইল বা পাসওয়ার্ড সঠিক নয়। আবার চেষ্টা করুন।');
+                    return;
+                }
+
+                showDashboard(data.user.email);
+            } catch (e) {
+                showLoginError('লগইন করা যায়নি। ইন্টারনেট সংযোগ চেক করুন।');
+            } finally {
+                btn.disabled = false;
+                document.getElementById('loginBtnText').textContent = '🔐 লগইন করুন';
+            }
+        }
+
+        // ================================================================
+        //  FORGOT PASSWORD
+        // ================================================================
+        function showForgotPassword() {
+            // Clear messages
+            const loginErr = document.getElementById('loginError');
+            if (loginErr) loginErr.classList.remove('visible');
+
+            const resetErrorEl = document.getElementById('resetError');
+            if (resetErrorEl) {
+                resetErrorEl.textContent = '';
+                resetErrorEl.style.display = 'none';
+            }
+            const resetSuccessEl = document.getElementById('resetSuccess');
+            if (resetSuccessEl) resetSuccessEl.style.display = 'none';
+
+            // Hide login form elements (Option B)
+            const loginTitleEl = document.querySelector('.login-title');
+            const loginSubtitleEl = document.querySelector('.login-subtitle');
+            const loginEmailGroup = document.querySelector('label[for="loginEmail"]')?.closest('.form-group');
+            const loginPasswordGroup = document.querySelector('label[for="loginPassword"]')?.closest('.form-group');
+            const loginBtnEl = document.getElementById('loginBtn');
+            const forgotBtnEl = document.getElementById('forgotPasswordBtn');
+
+            if (loginTitleEl) loginTitleEl.style.display = 'none';
+            if (loginSubtitleEl) loginSubtitleEl.style.display = 'none';
+            if (loginEmailGroup) loginEmailGroup.style.display = 'none';
+            if (loginPasswordGroup) loginPasswordGroup.style.display = 'none';
+            if (loginBtnEl) loginBtnEl.style.display = 'none';
+            if (forgotBtnEl) forgotBtnEl.style.display = 'none';
+            if (loginErr) loginErr.style.display = 'none';
+
+            // Show forgot password panel
+            document.getElementById('forgotPasswordPanel').style.display = 'block';
+
+            // Focus reset email
+            setTimeout(() => {
+                const resetEmailEl = document.getElementById('resetEmail');
+                if (resetEmailEl) resetEmailEl.focus();
+            }, 0);
+        }
+
+        function backToLogin() {
+            const resetErrorEl = document.getElementById('resetError');
+            if (resetErrorEl) {
+                resetErrorEl.textContent = '';
+                resetErrorEl.style.display = 'none';
+            }
+            const resetSuccessEl = document.getElementById('resetSuccess');
+            if (resetSuccessEl) resetSuccessEl.style.display = 'none';
+
+            // Hide forgot password panel
+            document.getElementById('forgotPasswordPanel').style.display = 'none';
+
+            // Restore login form elements (Option B)
+            const loginTitleEl = document.querySelector('.login-title');
+            const loginSubtitleEl = document.querySelector('.login-subtitle');
+            const loginEmailGroup = document.querySelector('label[for="loginEmail"]')?.closest('.form-group');
+            const loginPasswordGroup = document.querySelector('label[for="loginPassword"]')?.closest('.form-group');
+            const loginBtnEl = document.getElementById('loginBtn');
+            const forgotBtnEl = document.getElementById('forgotPasswordBtn');
+            const loginErr = document.getElementById('loginError');
+
+            if (loginTitleEl) loginTitleEl.style.display = '';
+            if (loginSubtitleEl) loginSubtitleEl.style.display = '';
+            if (loginEmailGroup) loginEmailGroup.style.display = '';
+            if (loginPasswordGroup) loginPasswordGroup.style.display = '';
+            if (loginBtnEl) loginBtnEl.style.display = '';
+            if (forgotBtnEl) forgotBtnEl.style.display = '';
+            if (loginErr) {
+                loginErr.style.display = '';
+                loginErr.classList.remove('visible');
+            }
+
+            // Focus login email
+            setTimeout(() => {
+                const loginEmailEl = document.getElementById('loginEmail');
+                if (loginEmailEl) loginEmailEl.focus();
+            }, 0);
+        }
+
+        async function handleResetPassword() {
+            const email = document.getElementById('resetEmail').value.trim();
+
+            const resetErrorEl = document.getElementById('resetError');
+            const resetSuccessEl = document.getElementById('resetSuccess');
+            const btn = document.getElementById('resetBtn');
+            const btnText = document.getElementById('resetBtnText');
+
+            if (!btn) return;
+
+            // Prevent double submit / double tap
+            if (btn.dataset.busy === '1') return;
+            btn.dataset.busy = '1';
+
+            if (resetErrorEl) {
+                resetErrorEl.textContent = '';
+                resetErrorEl.style.display = 'none';
+            }
+            if (resetSuccessEl) resetSuccessEl.style.display = 'none';
+
+            if (!email) {
+                if (resetErrorEl) {
+                    resetErrorEl.textContent = 'ইমেইল প্রদান করুন।';
+                    resetErrorEl.style.display = 'block';
+                }
+                btn.dataset.busy = '0';
+                return;
+            }
+
+            if (!supabaseClient) {
+                if (resetErrorEl) {
+                    resetErrorEl.textContent = 'সার্ভার কনফিগারেশন সমস্যা। .env ফাইল চেক করুন।';
+                    resetErrorEl.style.display = 'block';
+                }
+                btn.dataset.busy = '0';
+                return;
+            }
+
+            const originalBtnText = btnText ? btnText.textContent : '';
+            btn.disabled = true;
+            if (btnText) btnText.innerHTML = '<div class="login-spinner" style="width:16px;height:16px;"></div> পাঠানো হচ্ছে...';
+
+            try {
+                const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+                    redirectTo: window.location.origin + '/reset-password.html'
+                });
+
+                if (error) {
+                    const msg = error.message || 'রিসেট লিংক পাঠানো যায়নি।';
+                    if (resetErrorEl) {
+                        // 429 example: "too many requests"
+                        resetErrorEl.textContent = 'রিসেট করা যায়নি: ' + msg;
+                        resetErrorEl.style.display = 'block';
+                    }
+                    return;
+                }
+
+                if (resetSuccessEl) {
+                    resetSuccessEl.textContent = 'ইমেইলে রিসেট লিংক পাঠানো হয়েছে (যদি অ্যাকাউন্ট থাকে)।';
+                    resetSuccessEl.style.display = 'block';
+                }
+            } catch (e) {
+                if (resetErrorEl) {
+                    resetErrorEl.textContent = 'রিসেট রিকোয়েস্ট ব্যর্থ হয়েছে। ইন্টারনেট সংযোগ চেক করুন।';
+                    resetErrorEl.style.display = 'block';
+                }
+            } finally {
+                btn.disabled = false;
+                btn.dataset.busy = '0';
+                if (btnText) btnText.textContent = originalBtnText || '📩 রিসেট লিংক পাঠান';
+            }
+        }
+
+        async function handleLogout() {
+            if (!confirm('লগআউট করতে চান?')) return;
+            if (supabaseClient) await supabaseClient.auth.signOut();
+            allOrders = [];
+            showLoginScreen();
+        }
+
+        // Allow pressing Enter on password field to submit
+        document.getElementById('loginPassword').addEventListener('keydown', e => {
+            if (e.key === 'Enter') handleLogin();
+        });
+
+        document.getElementById('loginEmail').addEventListener('keydown', e => {
+            if (e.key === 'Enter') document.getElementById('loginPassword').focus();
+        });
+
+        function showLoginError(msg) {
+            const errBox = document.getElementById('loginError');
+            errBox.textContent = '⚠️ ' + msg;
+            errBox.classList.add('visible');
+        }
+
+        function showLoginScreen(msg) {
+            document.getElementById('dashboard').style.display  = 'none';
+            document.getElementById('loginScreen').style.display = 'flex';
+            if (msg) showLoginError(msg);
+        }
+
+        function showDashboard(email) {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('dashboard').style.display   = 'block';
+            document.getElementById('adminEmailDisplay').textContent = '👤 ' + email;
+            loadDashboardData();
+        }
+
+        // ================================================================
+        //  DASHBOARD DATA
+        // ================================================================
+        let allOrders    = [];
+        let currentFilter = 'all';
+
+        async function loadDashboardData() {
+            await fetchStock();
+            await fetchOrders();
+        }
+
+        // ---- STOCK ----
+        async function fetchStock() {
+            if (!supabaseClient) return;
+            const { data, error } = await supabaseClient
+                .from('settings').select('value').eq('key', 'in_stock').single();
+            const inStock = (!error && data) ? data.value === 'true' : true;
+            document.getElementById('stockToggle').checked = inStock;
+            updateStockUI(inStock);
+        }
+
+        async function toggleStock() {
+            const toggle  = document.getElementById('stockToggle');
+            const inStock = toggle.checked;
+            const { error } = await supabaseClient
+                .from('settings').upsert({ key: 'in_stock', value: inStock.toString() });
+            if (error) {
+                alert('স্টক স্থিতি আপডেট করা সম্ভব হয়নি।');
+                toggle.checked = !inStock;
+                return;
+            }
+            updateStockUI(inStock);
+        }
+
+        function updateStockUI(inStock) {
+            const badge = document.getElementById('stockStatusBadge');
+            badge.className = inStock ? 'stock-status-badge in-stock' : 'stock-status-badge out-stock';
+            badge.textContent = inStock ? 'স্টকে আছে (In Stock)' : 'স্টক শেষ (Out of Stock)';
+        }
+
+        // ---- ORDERS ----
+        async function fetchOrders() {
+            if (!supabaseClient) return;
+            const { data, error } = await supabaseClient
+                .from('orders').select('*').order('created_at', { ascending: false });
+            allOrders = (!error && data) ? data : [];
+            calculateStats();
+            renderOrders();
+        }
+
+        function calculateStats() {
+            const confirmed = allOrders.filter(o => o.status === 'confirmed');
+            document.getElementById('statTotalOrders').textContent     = allOrders.length;
+            document.getElementById('statPendingOrders').textContent    = allOrders.filter(o => o.status === 'pending').length;
+            document.getElementById('statConfirmedOrders').textContent  = confirmed.length;
+            document.getElementById('statTotalSales').textContent =
+                '৳' + confirmed.reduce((s, o) => s + Number(o.total_price), 0).toLocaleString();
+        }
+
+        function setFilter(filter) {
+            currentFilter = filter;
+            document.querySelectorAll('.filter-tab').forEach(t =>
+                t.classList.toggle('active', t.dataset.filter === filter));
+            renderOrders();
+        }
+
+        function renderOrders() {
+            const tbody    = document.getElementById('ordersTableBody');
+            const emptyEl  = document.getElementById('emptyState');
+            const search   = document.getElementById('searchInput').value.toLowerCase().trim();
+
+            let list = allOrders;
+            if (currentFilter !== 'all') list = list.filter(o => o.status === currentFilter);
+            if (search) list = list.filter(o =>
+                (o.name   && o.name.toLowerCase().includes(search)) ||
+                (o.mobile && o.mobile.includes(search)));
+
+            tbody.innerHTML = '';
+            if (list.length === 0) {
+                document.getElementById('ordersTable').style.display = 'none';
+                emptyEl.style.display = 'block';
+                return;
+            }
+            document.getElementById('ordersTable').style.display = 'table';
+            emptyEl.style.display = 'none';
+
+            list.forEach(order => {
+                const d       = new Date(order.created_at);
+                const dateStr = d.toLocaleDateString('bn-BD', { year:'numeric', month:'long', day:'numeric' });
+                const timeStr = d.toLocaleTimeString('bn-BD', { hour:'2-digit', minute:'2-digit' });
+                const shortId = String(order.id).substring(0, 8).toUpperCase();
+                const pending = order.status === 'pending';
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>
+                        <div style="font-weight:700;color:var(--accent-light);font-size:11px;">ID: ${shortId}</div>
+                        <div class="order-date">${dateStr} (${timeStr})</div>
+                    </td>
+                    <td>
+                        <div class="client-info">
+                            <span class="client-name">${esc(order.name)}</span>
+                            <a href="tel:${order.mobile}" class="client-phone">📞 ${esc(order.mobile)}</a>
+                            <span class="client-addr" title="${esc(order.address)}">📍 ${esc(order.address)}</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="combo-info">
+                            <span class="combo-name">${esc(order.combo_name)}</span>
+                            <span style="font-size:11px;color:var(--text-muted)">কম্বো #${order.combo_id}</span>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="combo-name">${esc(order.delivery_type)}</span>
+                        <span class="delivery-charge">চার্জ: ৳${order.delivery_charge}</span>
+                    </td>
+                    <td><div class="order-total">৳${Number(order.total_price).toLocaleString()}</div></td>
+                    <td>
+                        <span class="status-badge ${order.status}">
+                            ${pending ? '⏳ অপেক্ষমাণ' : '✅ নিশ্চিতকৃত'}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="action-btns">
+                            ${pending ? `<button class="btn-action confirm" onclick="confirmOrder('${order.id}')">নিশ্চিত করুন</button>` : ''}
+                            <button class="btn-action delete" onclick="deleteOrder('${order.id}')">মুছুন</button>
+                        </div>
+                    </td>`;
+                tbody.appendChild(tr);
+            });
+        }
+
+        async function confirmOrder(id) {
+            if (!confirm('অর্ডারটি নিশ্চিত করতে চান?')) return;
+            const { error } = await supabaseClient.from('orders').update({ status: 'confirmed' }).eq('id', id);
+            if (error) { alert('অর্ডার নিশ্চিত করা যায়নি।'); return; }
+            await fetchOrders();
+        }
+
+        async function deleteOrder(id) {
+            if (!confirm('অর্ডারটি স্থায়ীভাবে মুছে ফেলবেন?')) return;
+            const { error } = await supabaseClient.from('orders').delete().eq('id', id);
+            if (error) { alert('অর্ডার মুছা যায়নি।'); return; }
+            await fetchOrders();
+        }
+
+        async function seedMockOrders() {
+            const mock = [
+                { name:'আরিফুল ইসলাম',   mobile:'01712345678', address:'বাসা ২৪, রোড ৩, মিরপুর, ঢাকা',      combo_id:1, combo_name:'স্টার্টার কেয়ার কম্বো',    delivery_type:'ঢাকার ভিতরে', delivery_charge:80,  total_price:670, status:'pending' },
+                { name:'তাহমিনা চৌধুরী', mobile:'01898765432', address:'জিইসি মোড়, বাগমনিরাম রোড, চট্টগ্রাম', combo_id:2, combo_name:'প্রফেশনাল কেয়ার কম্বো', delivery_type:'ঢাকার বাইরে', delivery_charge:130, total_price:820, status:'confirmed' },
+                { name:'মোঃ রফিকুল আলম', mobile:'01555667788', address:'হোল্ডিং ৪৫, শিবগঞ্জ বাজার, সিলেট',   combo_id:3, combo_name:'আলটিমেট কেয়ার কম্বো',   delivery_type:'ঢাকার বাইরে', delivery_charge:130, total_price:920, status:'pending' },
+            ];
+            const { error } = await supabaseClient.from('orders').insert(mock);
+            if (error) { alert('ডেমো ডেটা যুক্ত করা যায়নি: ' + error.message); return; }
+            alert('৩টি ডেমো অর্ডার যুক্ত হয়েছে!');
+            await fetchOrders();
+        }
+
+        // XSS protection
+        function esc(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+                .replace(/>/g,'&gt;').replace(/"/g,'&quot;')
+                .replace(/'/g,'&#039;');
+        }
+
+        // ================================================================
+        //  BOOT
+        // ================================================================
+        window.addEventListener('DOMContentLoaded', async () => {
+            await initSupabase();
+
+            // Always keep the password reset/request UI hidden on admin.html login screen.
+            // Reset-to-new-password is handled by reset-password.html only.
+            try {
+                const forgotPanel = document.getElementById('forgotPasswordPanel');
+                if (forgotPanel) forgotPanel.style.display = 'none';
+
+                const pathname = window.location.pathname || '';
+                const isResetPage = pathname.toLowerCase().endsWith('reset-password.html');
+
+                const panel = document.getElementById('resetNewPasswordPanel');
+                if (panel && !isResetPage) panel.style.display = 'none';
+            } catch (e) {
+                // ignore
+            }
+
+            await checkSession();
+        });
+    </script>
+</body>
+</html>
