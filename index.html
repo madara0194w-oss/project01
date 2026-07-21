@@ -1550,6 +1550,19 @@
             box-shadow: 0 15px 35px rgba(0,0,0,0.3);
         }
 
+        .btn-flash {
+            animation: flash 1.5s ease-in-out infinite;
+        }
+
+        @keyframes flash {
+            0%, 100% {
+                box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            }
+            50% {
+                box-shadow: 0 0 30px 10px rgba(212, 160, 23, 0.6), 0 8px 25px rgba(0,0,0,0.2);
+            }
+        }
+
         .btn-cta-secondary {
             padding: 16px 40px;
             background: transparent;
@@ -2568,10 +2581,10 @@ src="https://www.facebook.com/tr?id=3253071001566950&ev=PageView&noscript=1"
                 <div class="hero-feature desktop-only"><span>🚀</span> সহজ প্রয়োগ</div>
             </div>
             <div class="hero-cta desktop-only">
-                <button class="btn-cta-primary" onclick="scrollToOrderBuilder()">এখনই অর্ডার করুন!</button>
+                <button class="btn-cta-primary btn-flash" onclick="scrollToOrderBuilder()">এখনই অর্ডার করুন!</button>
             </div>
             <div class="hero-cta mobile-only">
-                <button class="btn-cta-primary" onclick="scrollToOrderBuilder()">এখনই অর্ডার করুন!</button>
+                <button class="btn-cta-primary btn-flash" onclick="scrollToOrderBuilder()">এখনই অর্ডার করুন!</button>
             </div>
         </div>
     </section>
@@ -3109,7 +3122,7 @@ src="https://www.facebook.com/tr?id=3253071001566950&ev=PageView&noscript=1"
     <!-- LIVE CUSTOMER REVIEW HIGHLIGHT -->
     <section class="live-review-section" aria-label="লাইভ কাস্টমার রিভিউ">
         <div class="hero-cta live-review-cta">
-            <button class="btn-cta-primary" onclick="scrollToOrderBuilder()">এখনই অর্ডার করুন!</button>
+            <button class="btn-cta-primary btn-flash" onclick="scrollToOrderBuilder()">এখনই অর্ডার করুন!</button>
         </div>
 
         <div class="live-review-card">
