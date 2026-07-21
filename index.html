@@ -2252,6 +2252,103 @@
                 margin-top: 2px !important;
             }
         }
+
+        /* ===== PROOF SLIDESHOW SECTION ===== */
+        .proof-slideshow-section {
+            padding: 50px 20px;
+            background: linear-gradient(135deg, var(--light-gray) 0%, var(--cream) 100%);
+            text-align: center;
+        }
+
+        .proof-carousel-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: var(--white);
+            border-radius: 20px;
+            padding: 15px;
+            box-shadow: 0 10px 30px rgba(44, 24, 16, 0.12);
+            border: 2px solid rgba(212, 160, 23, 0.3);
+            position: relative;
+        }
+
+        .proof-slides-wrapper {
+            position: relative;
+            width: 100%;
+            height: 480px;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #111;
+        }
+
+        @media (max-width: 768px) {
+            .proof-slides-wrapper {
+                height: 350px;
+            }
+        }
+
+        .proof-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.8s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .proof-slide.active {
+            opacity: 1;
+            z-index: 2;
+        }
+
+        .proof-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 10px;
+            background: #111;
+        }
+
+        .proof-dots {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .proof-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #dcd6ce;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .proof-dot.active {
+            background: var(--primary);
+            width: 30px;
+            border-radius: 6px;
+        }
+
+        .proof-badge-floating {
+            position: absolute;
+            top: 25px;
+            left: 25px;
+            background: rgba(46, 125, 50, 0.95);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            z-index: 10;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            backdrop-filter: blur(4px);
+        }
+
         </style>
         <!-- Meta Pixel Code -->
 <script>
@@ -2816,6 +2913,37 @@ src="https://www.facebook.com/tr?id=4416875668587350&ev=PageView&noscript=1"
         </div>
     </section>
 
+    
+    <!-- PROOF SLIDESHOW SECTION -->
+    <section class="proof-slideshow-section">
+        <div class="section-header">
+            <h2>আমাদের কাজের <span>বাস্তব প্রমাণ</span></h2>
+            <div class="section-line"></div>
+            <p>আমাদের পণ্য ব্যবহারের পর কাঠের ফার্নিচারের দারুণ পরিবর্তন — এক নজরে সফলতার প্রমাণ</p>
+        </div>
+
+        <div class="proof-carousel-container">
+            <div class="proof-badge-floating">✨ ১০০% কার্যকরী ফলাফল</div>
+            <div class="proof-slides-wrapper" id="proofSlidesWrapper">
+                <div class="proof-slide active" data-index="0">
+                    <img src="asset/ba1.jpg" alt="Proof 1 - Before and After Varnish" loading="lazy">
+                </div>
+                <div class="proof-slide" data-index="1">
+                    <img src="asset/ba2.png" alt="Proof 2 - Before and After Varnish" loading="lazy">
+                </div>
+                <div class="proof-slide" data-index="2">
+                    <img src="asset/ba3.png" alt="Proof 3 - Before and After Varnish" loading="lazy">
+                </div>
+            </div>
+            <div class="proof-dots" id="proofDots">
+                <div class="proof-dot active" onclick="currentProofSlideClick(0)"></div>
+                <div class="proof-dot" onclick="currentProofSlideClick(1)"></div>
+                <div class="proof-dot" onclick="currentProofSlideClick(2)"></div>
+            </div>
+        </div>
+    </section>
+
+
     <!-- ORDER BUILDER -->
     <section class="order-builder-section" id="orderBuilder">
         <div class="section-header">
@@ -3056,6 +3184,53 @@ src="https://www.facebook.com/tr?id=4416875668587350&ev=PageView&noscript=1"
 
     <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
+        
+        let currentProofSlide = 0;
+        let proofInterval;
+
+        function showProofSlide(index) {
+            const slides = document.querySelectorAll('.proof-slide');
+            const dots = document.querySelectorAll('.proof-dot');
+            if (!slides.length) return;
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === index);
+            });
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === index);
+            });
+            currentProofSlide = index;
+        }
+
+        function nextProofSlide() {
+            const slides = document.querySelectorAll('.proof-slide');
+            if (!slides.length) return;
+            let nextIndex = (currentProofSlide + 1) % slides.length;
+            showProofSlide(nextIndex);
+        }
+
+        function currentProofSlideClick(index) {
+            showProofSlide(index);
+            resetProofTimer();
+        }
+
+        function resetProofTimer() {
+            clearInterval(proofInterval);
+            proofInterval = setInterval(nextProofSlide, 3500);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const slides = document.querySelectorAll('.proof-slide');
+            if (slides.length > 0) {
+                proofInterval = setInterval(nextProofSlide, 3500);
+                const carouselContainer = document.querySelector('.proof-carousel-container');
+                if (carouselContainer) {
+                    carouselContainer.addEventListener('mouseenter', () => clearInterval(proofInterval));
+                    carouselContainer.addEventListener('mouseleave', resetProofTimer);
+                }
+            }
+        });
+
+
         let supabaseClient = null;
 
         function initSupabase() {
@@ -3665,5 +3840,5 @@ src="https://www.facebook.com/tr?id=4416875668587350&ev=PageView&noscript=1"
         });
     </script>
 
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a1e11fbb2c1e26ba',t:'MTc4NDU0MTY3OQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a1e11fbb2c1e26ba',t:'MTc4NDU0MTY3OQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a1e7ee409e3026ba',t:'MTc4NDYxMzA1Mw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
