@@ -1550,21 +1550,6 @@
             box-shadow: 0 15px 35px rgba(0,0,0,0.3);
         }
 
-        .btn-flash {
-            animation: flash 0.8s ease-in-out infinite;
-        }
-
-        @keyframes flash {
-            0%, 100% {
-                transform: scale(1);
-                box-shadow: 0 0 5px rgba(212, 160, 23, 0.4);
-            }
-            50% {
-                transform: scale(1.08);
-                box-shadow: 0 0 25px 8px rgba(212, 160, 23, 0.9), 0 0 60px 15px rgba(212, 160, 23, 0.4);
-            }
-        }
-
         .btn-cta-secondary {
             padding: 16px 40px;
             background: transparent;
@@ -2583,10 +2568,10 @@ src="https://www.facebook.com/tr?id=3253071001566950&ev=PageView&noscript=1"
                 <div class="hero-feature desktop-only"><span>🚀</span> সহজ প্রয়োগ</div>
             </div>
             <div class="hero-cta desktop-only">
-                <button class="btn-cta-primary btn-flash" onclick="scrollToOrderBuilder()">এখনই অর্ডার করুন!</button>
+                <button class="btn-cta-primary" onclick="scrollToOrderBuilder()">এখনই অর্ডার করুন!</button>
             </div>
             <div class="hero-cta mobile-only">
-                <button class="btn-cta-primary btn-flash" onclick="scrollToOrderBuilder()">এখনই অর্ডার করুন!</button>
+                <button class="btn-cta-primary" onclick="scrollToOrderBuilder()">এখনই অর্ডার করুন!</button>
             </div>
         </div>
     </section>
@@ -3124,13 +3109,13 @@ src="https://www.facebook.com/tr?id=3253071001566950&ev=PageView&noscript=1"
     <!-- LIVE CUSTOMER REVIEW HIGHLIGHT -->
     <section class="live-review-section" aria-label="লাইভ কাস্টমার রিভিউ">
         <div class="hero-cta live-review-cta">
-            <button class="btn-cta-primary btn-flash" onclick="scrollToOrderBuilder()">এখনই অর্ডার করুন!</button>
+            <button class="btn-cta-primary" onclick="scrollToOrderBuilder()">এখনই অর্ডার করুন!</button>
         </div>
 
         <div class="live-review-card">
             <h3 class="live-review-title">কাস্টমারের দেওয়া <span>লাইভ রিভিউ</span></h3>
             <div class="live-review-image-wrap">
-                <img src="asset/review.jpg" alt="কাস্টমারের লাইভ WhatsApp রিভিউ - আগে ও পরে ফলাফল" loading="lazy">
+                <img src="asset/customer-live-review.png" alt="কাস্টমারের লাইভ WhatsApp রিভিউ - আগে ও পরে ফলাফল" loading="lazy">
             </div>
             <p class="live-review-caption"><strong>বাস্তব গ্রাহকের ফিডব্যাক:</strong> আমাদের পণ্য ব্যবহারের পর গ্রাহকের পাঠানো আগে-পরে ফলাফল।</p>
         </div>
@@ -3358,7 +3343,7 @@ src="https://www.facebook.com/tr?id=3253071001566950&ev=PageView&noscript=1"
         <div class="footer-divider"></div>
         <p>🪵 ফার্নিচারের যত্নে আমরাই আপনার সেরা সঙ্গী</p>
         <p style="margin-top: 15px;">© ২০২৬ NHindusry | সর্বস্বত্ব সংরক্ষিত</p>
-        <p style="margin-top: 8px;">📞 01645448213 | 📧 <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="ef86818980afa1a786818b9a9c9d96c18c8082c18d8b">[email&#160;protected]</a></p>
+        <p style="margin-top: 8px;">📞 01645448213 | 📧 <a href="/cdn-cgi/l/email-protection#41282f272e010f09282f25343233386f222e2c6f2325"><span class="__cf_email__" data-cfemail="b8d1d6ded7f8f6f0d1d6dccdcbcac196dbd7d596dadc">[email&#160;protected]</span></a></p>
        
     </footer>
 
@@ -3754,7 +3739,7 @@ src="https://www.facebook.com/tr?id=3253071001566950&ev=PageView&noscript=1"
 
             if (supabaseClient) {
                 try {
-                    const { data, error } = await supabaseClient
+                    const { error } = await supabaseClient
                         .from('orders')
                         .insert([
                             {
@@ -3768,11 +3753,10 @@ src="https://www.facebook.com/tr?id=3253071001566950&ev=PageView&noscript=1"
                                 total_price: total,
                                 status: 'pending'
                             }
-                        ])
-                        .select();
-                    if (!error && data && data.length > 0) {
+                        ]);
+
+                    if (!error) {
                         success = true;
-                        orderIdStr = data[0].id;
                     } else {
                         console.error('Supabase insert error:', error);
                         alert('দুঃখিত, অর্ডার সাবমিট করার সময় একটি ত্রুটি ঘটেছে। অনুগ্রহ করে আবার চেষ্টা করুন।');
@@ -4033,5 +4017,5 @@ src="https://www.facebook.com/tr?id=3253071001566950&ev=PageView&noscript=1"
         });
     </script>
 
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a1e11fbb2c1e26ba',t:'MTc4NDU0MTY3OQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a1e8016aac00c3a2',t:'MTc4NDYxMzgzOA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a1eb308c2e7adae6',t:'MTc4NDY0NzIyNg=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a1ebc9365b23c718',t:'MTc4NDY1MzQ3OQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
