@@ -764,6 +764,11 @@
         }
 
         /* Buttons */
+        @keyframes flash-btn {
+            0%, 100% { box-shadow: 0 6px 20px rgba(139, 69, 19, 0.35); }
+            50% { box-shadow: 0 6px 35px rgba(255, 215, 0, 0.8), 0 0 40px rgba(255, 215, 0, 0.4); }
+        }
+
         .btn-order {
             width: 100%;
             padding: 16px;
@@ -779,6 +784,7 @@
             box-shadow: 0 6px 20px rgba(139, 69, 19, 0.35);
             position: relative;
             overflow: hidden;
+            animation: flash-btn 2s infinite;
         }
 
         .btn-order::after {
@@ -1189,6 +1195,11 @@
             margin-bottom: 20px;
         }
 
+        @keyframes flash-final-btn {
+            0%, 100% { box-shadow: 0 6px 20px rgba(46, 125, 50, 0.35); }
+            50% { box-shadow: 0 6px 35px rgba(255, 215, 0, 0.8), 0 0 45px rgba(76, 175, 80, 0.5); }
+        }
+
         .order-final-btn {
             width: 100%;
             padding: 18px;
@@ -1202,6 +1213,7 @@
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 6px 20px rgba(46, 125, 50, 0.35);
+            animation: flash-final-btn 2s infinite;
         }
 
         .order-final-btn:hover {
