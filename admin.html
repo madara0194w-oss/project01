@@ -398,7 +398,7 @@
                     </div>
                 </div>
             </div>
-            <p class="login-note">অননুমোদিত প্রবেশ নিষিদ্ধ। আপনার সেশন নিরাপদে সংরক্ষিত থাকে।</p>
+            <p class="login-note">অননুমোদিত প্রবেশ নিষিদ্ধ। নিরাপত্তার জন্য অ্যাডমিন সেশন ১ ঘণ্টা সক্রিয় থাকবে।</p>
         </div>
     </section>
 
@@ -545,6 +545,8 @@
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1oeG9id250a29kdnVmcGZra2twIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ1MTI3NjIsImV4cCI6MjEwMDA4ODc2Mn0.v5vAKsaBuuJmlDE4zbpT4crbfUij3rjixZpIBCMo58I';
         const PAGE_SIZE = 15;
         const FETCH_PAGE_SIZE = 1000;
+        const ADMIN_SESSION_DURATION_MS = 60 * 60 * 1000; // 1 hour
+        const ADMIN_SESSION_EXPIRES_AT_KEY = 'nhindustry_admin_session_expires_at';
 
         let supabaseClient = null;
         let allOrders = [];
@@ -552,6 +554,8 @@
         let loggedInEmail = '';
         let pendingModalAction = null;
         let stockLoaded = false;
+        let adminSessionExpiryTimer = null;
+        let adminSessionExpiring = false;
 
         const VIEW_META = {
             overview: 'ওভারভিউ', orders: 'অর্ডার', customers: 'গ্রাহক', retargeting: 'রিটার্গেটিং', inventory: 'স্টক ও পণ্য', reports: 'রিপোর্ট', settings: 'সেটিংস'
@@ -677,14 +681,89 @@
             else { button.disabled = false; if (button.dataset.originalHtml) button.innerHTML = button.dataset.originalHtml; iconify(); }
         }
 
+        function getAdminSessionExpiresAt() {
+            const value = Number(localStorage.getItem(ADMIN_SESSION_EXPIRES_AT_KEY));
+            return Number.isFinite(value) && value > 0 ? value : 0;
+        }
+
+        function saveAdminSessionExpiresAt(expiresAt) {
+            localStorage.setItem(ADMIN_SESSION_EXPIRES_AT_KEY, String(expiresAt));
+            scheduleAdminSessionExpiry(expiresAt);
+        }
+
+        function clearAdminSessionExpiry() {
+            if (adminSessionExpiryTimer) {
+                clearTimeout(adminSessionExpiryTimer);
+                adminSessionExpiryTimer = null;
+            }
+            localStorage.removeItem(ADMIN_SESSION_EXPIRES_AT_KEY);
+        }
+
+        function deriveAdminSessionExpiresAt(session) {
+            const lastSignInAt = session?.user?.last_sign_in_at;
+            const lastSignInMs = lastSignInAt ? new Date(lastSignInAt).getTime() : 0;
+            return Number.isFinite(lastSignInMs) && lastSignInMs > 0 ? lastSignInMs + ADMIN_SESSION_DURATION_MS : 0;
+        }
+
+        function scheduleAdminSessionExpiry(expiresAt = getAdminSessionExpiresAt()) {
+            if (adminSessionExpiryTimer) clearTimeout(adminSessionExpiryTimer);
+            adminSessionExpiryTimer = null;
+            if (!expiresAt) return;
+            const delay = expiresAt - Date.now();
+            if (delay <= 0) {
+                window.setTimeout(() => expireAdminSession(), 0);
+                return;
+            }
+            adminSessionExpiryTimer = window.setTimeout(() => expireAdminSession(), Math.min(delay, 2147483647));
+        }
+
+        function isAdminSessionValid(session) {
+            let expiresAt = getAdminSessionExpiresAt();
+            if (!expiresAt) {
+                expiresAt = deriveAdminSessionExpiresAt(session);
+                if (expiresAt) localStorage.setItem(ADMIN_SESSION_EXPIRES_AT_KEY, String(expiresAt));
+            }
+            if (!expiresAt || Date.now() >= expiresAt) return false;
+            scheduleAdminSessionExpiry(expiresAt);
+            return true;
+        }
+
+        async function expireAdminSession(message = 'নিরাপত্তার জন্য ১ ঘণ্টা পর সেশন শেষ হয়েছে। আবার লগইন করুন।') {
+            if (adminSessionExpiring) return;
+            adminSessionExpiring = true;
+            clearAdminSessionExpiry();
+            try { if (supabaseClient) await supabaseClient.auth.signOut(); } catch (_) { /* UI still expires locally */ }
+            allOrders = [];
+            loggedInEmail = '';
+            try { closeConfirm(); closeDrawer(); closeSidebar(); } catch (_) { /* Some UI elements may not be ready yet. */ }
+            showLoginScreen(message);
+            adminSessionExpiring = false;
+        }
+
+        async function ensureAdminSessionIsActive() {
+            try {
+                const { data: { session }, error } = await supabaseClient.auth.getSession();
+                if (error) throw error;
+                if (!session?.user?.email || !isAdminSessionValid(session)) {
+                    await expireAdminSession();
+                    return false;
+                }
+                return true;
+            } catch (_) {
+                await expireAdminSession('সেশন যাচাই করা যায়নি। আবার লগইন করুন।');
+                return false;
+            }
+        }
+
         async function checkSession() {
             try {
                 const { data: { session }, error } = await supabaseClient.auth.getSession();
                 if (error) throw error;
-                if (session?.user?.email) showDashboard(session.user.email);
-                else showLoginScreen();
+                if (session?.user?.email && isAdminSessionValid(session)) showDashboard(session.user.email);
+                else if (session?.user?.email) await expireAdminSession();
+                else { clearAdminSessionExpiry(); showLoginScreen(); }
             } catch (error) {
-                showLoginScreen('সেশন যাচাই করা যায়নি। আবার লগইন করুন।');
+                await expireAdminSession('সেশন যাচাই করা যায়নি। আবার লগইন করুন।');
             }
         }
 
@@ -719,6 +798,7 @@
             try {
                 const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
                 if (error || !data?.session) throw error || new Error('লগইন সম্পন্ন হয়নি।');
+                saveAdminSessionExpiresAt(Date.now() + ADMIN_SESSION_DURATION_MS);
                 showDashboard(data.user.email);
             } catch (error) {
                 showLoginError(error?.message || 'লগইন করা যায়নি। তথ্য যাচাই করে আবার চেষ্টা করুন।');
@@ -757,6 +837,7 @@
         async function handleLogout() {
             openConfirm({ title: 'লগআউট করবেন?', text: 'এই ডিভাইসের বর্তমান অ্যাডমিন সেশন শেষ হয়ে যাবে।', actionLabel: 'লগআউট', tone: 'default', action: async () => {
                 try { await supabaseClient.auth.signOut(); } catch (_) { /* local UI still clears */ }
+                clearAdminSessionExpiry();
                 allOrders = []; loggedInEmail = ''; closeDrawer(); showLoginScreen(); toast('আপনি লগআউট করেছেন।', 'success');
             }});
         }
@@ -776,6 +857,7 @@
         }
 
         async function loadDashboardData(showFeedback = false) {
+            if (loggedInEmail && !(await ensureAdminSessionIsActive())) return;
             const refreshButton = document.getElementById('refreshBtn');
             if (showFeedback) setLoading(refreshButton, true, 'রিফ্রেশ হচ্ছে…');
             try {
@@ -817,6 +899,7 @@
         }
         async function toggleStock() {
             if (!stockLoaded) return;
+            if (!(await ensureAdminSessionIsActive())) return;
             const toggle = document.getElementById('stockToggle');
             const wanted = toggle.checked;
             toggle.disabled = true;
@@ -925,6 +1008,7 @@
             const order = allOrders.find(o => String(o.id) === String(id));
             if (!order) return;
             openConfirm({ title: 'অর্ডার নিশ্চিত করবেন?', text: `#${shortId(order.id)} অর্ডারটি নিশ্চিতকৃত হিসেবে চিহ্নিত হবে।`, actionLabel: 'নিশ্চিত করুন', action: async () => {
+                if (!(await ensureAdminSessionIsActive())) return;
                 const { error } = await supabaseClient.from('orders').update({ status: 'confirmed' }).eq('id', id);
                 if (error) { toast(`অর্ডার আপডেট করা যায়নি: ${error.message}`, 'error'); return; }
                 const target = allOrders.find(o => String(o.id) === String(id)); if (target) target.status = 'confirmed';
@@ -1163,6 +1247,14 @@
                 const confirm = event.target.closest('[data-confirm-order]'); if (confirm) confirmOrder(confirm.dataset.confirmOrder);
             });
             document.addEventListener('keydown', event => { if (event.key === 'Escape') { closeConfirm(); closeDrawer(); closeSidebar(); } });
+            window.addEventListener('focus', () => { if (loggedInEmail) ensureAdminSessionIsActive(); });
+            document.addEventListener('visibilitychange', () => { if (!document.hidden && loggedInEmail) ensureAdminSessionIsActive(); });
+            window.addEventListener('storage', event => {
+                if (event.key !== ADMIN_SESSION_EXPIRES_AT_KEY || !loggedInEmail) return;
+                const expiresAt = getAdminSessionExpiresAt();
+                if (!expiresAt || Date.now() >= expiresAt) expireAdminSession();
+                else scheduleAdminSessionExpiry(expiresAt);
+            });
         }
 
         window.addEventListener('DOMContentLoaded', async () => {
@@ -1171,5 +1263,5 @@
             catch (error) { console.error(error); showLoginScreen('সার্ভার কনফিগারেশন লোড করা যায়নি।'); }
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a202c9a07bccdae3',t:'MTc4NDg5NDY2OA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a202c9a07bccdae3',t:'MTc4NDg5NDY2OA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a2033dd49ddb2154',t:'MTc4NDg5OTQyOA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
