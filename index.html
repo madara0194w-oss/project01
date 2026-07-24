@@ -764,9 +764,13 @@
         }
 
         /* Buttons */
-        @keyframes flash-btn {
-            0%, 100% { box-shadow: 0 6px 20px rgba(139, 69, 19, 0.35); }
-            50% { box-shadow: 0 6px 35px rgba(255, 215, 0, 0.8), 0 0 40px rgba(255, 215, 0, 0.4); }
+        @keyframes flash {
+            0%, 100% { transform: scale(1); box-shadow: 0 6px 20px rgba(212, 160, 23, 0.35); }
+            50%      { transform: scale(1.08); box-shadow: 0 6px 35px rgba(255, 215, 0, 0.9), 0 0 40px rgba(255, 215, 0, 0.45); }
+        }
+
+        .btn-flash {
+            animation: flash 0.8s ease-in-out infinite;
         }
 
         .btn-order {
@@ -784,7 +788,6 @@
             box-shadow: 0 6px 20px rgba(139, 69, 19, 0.35);
             position: relative;
             overflow: hidden;
-            animation: flash-btn 2s infinite;
         }
 
         .btn-order::after {
@@ -1195,11 +1198,6 @@
             margin-bottom: 20px;
         }
 
-        @keyframes flash-final-btn {
-            0%, 100% { box-shadow: 0 6px 20px rgba(46, 125, 50, 0.35); }
-            50% { box-shadow: 0 6px 35px rgba(255, 215, 0, 0.8), 0 0 45px rgba(76, 175, 80, 0.5); }
-        }
-
         .order-final-btn {
             width: 100%;
             padding: 18px;
@@ -1213,7 +1211,6 @@
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 6px 20px rgba(46, 125, 50, 0.35);
-            animation: flash-final-btn 2s infinite;
         }
 
         .order-final-btn:hover {
@@ -2580,10 +2577,10 @@ src="https://www.facebook.com/tr?id=3253071001566950&ev=PageView&noscript=1"
                 <div class="hero-feature desktop-only"><span>🚀</span> সহজ প্রয়োগ</div>
             </div>
             <div class="hero-cta desktop-only">
-                <button class="btn-cta-primary" onclick="scrollToOrderBuilder()">এখনই অর্ডার করুন!</button>
+                <button class="btn-cta-primary btn-flash" onclick="scrollToOrderBuilder()">এখনই অর্ডার করুন!</button>
             </div>
             <div class="hero-cta mobile-only">
-                <button class="btn-cta-primary" onclick="scrollToOrderBuilder()">এখনই অর্ডার করুন!</button>
+                <button class="btn-cta-primary btn-flash" onclick="scrollToOrderBuilder()">এখনই অর্ডার করুন!</button>
             </div>
         </div>
     </section>
@@ -3121,13 +3118,13 @@ src="https://www.facebook.com/tr?id=3253071001566950&ev=PageView&noscript=1"
     <!-- LIVE CUSTOMER REVIEW HIGHLIGHT -->
     <section class="live-review-section" aria-label="লাইভ কাস্টমার রিভিউ">
         <div class="hero-cta live-review-cta">
-            <button class="btn-cta-primary" onclick="scrollToOrderBuilder()">এখনই অর্ডার করুন!</button>
+            <button class="btn-cta-primary btn-flash" onclick="scrollToOrderBuilder()">এখনই অর্ডার করুন!</button>
         </div>
 
         <div class="live-review-card">
             <h3 class="live-review-title">কাস্টমারের দেওয়া <span>লাইভ রিভিউ</span></h3>
             <div class="live-review-image-wrap">
-                <img src="asset/customer-live-review.png" alt="কাস্টমারের লাইভ WhatsApp রিভিউ - আগে ও পরে ফলাফল" loading="lazy">
+                <img src="asset/review.jpg" alt="কাস্টমারের লাইভ WhatsApp রিভিউ - আগে ও পরে ফলাফল" loading="lazy">
             </div>
             <p class="live-review-caption"><strong>বাস্তব গ্রাহকের ফিডব্যাক:</strong> আমাদের পণ্য ব্যবহারের পর গ্রাহকের পাঠানো আগে-পরে ফলাফল।</p>
         </div>
@@ -3224,7 +3221,7 @@ src="https://www.facebook.com/tr?id=3253071001566950&ev=PageView&noscript=1"
 
             <div class="cod-badge">💵 পেমেন্ট পদ্ধতি: ক্যাশ অন ডেলিভারি (পণ্য হাতে পেয়ে টাকা প্রদান করুন)</div>
 
-            <button class="order-final-btn" onclick="placeOrder()">✅ অর্ডার কনফার্ম করুন</button>
+            <button class="order-final-btn btn-flash" onclick="placeOrder()">✅ অর্ডার কনফার্ম করুন</button>
         </div>
     </section>
 
@@ -3344,7 +3341,7 @@ src="https://www.facebook.com/tr?id=3253071001566950&ev=PageView&noscript=1"
         <h2>আজই অর্ডার করুন!</h2>
         <p>সীমিত সময়ের জন্য বিশেষ কম্বো অফার। এই সুযোগ মিস করবেন না।</p>
         <div class="cta-buttons">
-            <button class="btn-cta-primary" onclick="scrollToProducts()">🛒 কম্বো দেখুন ও অর্ডার করুন</button>
+            <button class="btn-cta-primary btn-flash" onclick="scrollToProducts()">🛒 কম্বো দেখুন ও অর্ডার করুন</button>
             <button class="btn-cta-secondary" onclick="callUs()">📞 আমাদের কল করুন</button>
         </div>
     </section>
