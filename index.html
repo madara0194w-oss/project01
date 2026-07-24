@@ -931,6 +931,7 @@
             background: var(--light-gray);
             opacity: 0;
             transition: opacity 0.3s ease;
+            cursor: zoom-in;
         }
 
         .order-item-fallback {
@@ -1576,6 +1577,21 @@
             background: rgba(255,255,255,0.15);
             border-color: var(--white);
             transform: translateY(-4px);
+        }
+
+        .btn-flash {
+            animation: flash 0.8s ease-in-out infinite;
+        }
+
+        @keyframes flash {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 0 5px rgba(212, 160, 23, 0.4);
+            }
+            50% {
+                transform: scale(1.08);
+                box-shadow: 0 0 25px 8px rgba(212, 160, 23, 0.9), 0 0 60px 15px rgba(212, 160, 23, 0.4);
+            }
         }
 
         /* ===== FOOTER ===== */
@@ -3553,6 +3569,7 @@ src="https://www.facebook.com/tr?id=3253071001566950&ev=PageView&noscript=1"
                 img.loading = 'lazy';
                 img.onload = function () { img.style.opacity = 1; wrap.classList.add('has-photo'); };
                 img.onerror = function () { img.style.display = 'none'; wrap.classList.remove('has-photo'); };
+                img.onclick = function (e) { e.stopPropagation(); openLightbox(this); };
                 wrap.appendChild(img);
 
                 const name = document.createElement('div');
@@ -3918,8 +3935,11 @@ src="https://www.facebook.com/tr?id=3253071001566950&ev=PageView&noscript=1"
         }
 
         function openLightbox(imgEl) {
-            // Only open if the real photo actually loaded (not a broken/missing image)
-            if (!imgEl.closest('.gallery-slide').classList.contains('has-photo')) return;
+            const gallerySlide = imgEl.closest('.gallery-slide');
+            const orderItem = imgEl.closest('.order-item');
+            if (gallerySlide && !gallerySlide.classList.contains('has-photo')) return;
+            if (orderItem && !orderItem.classList.contains('has-photo')) return;
+            if (!gallerySlide && !orderItem) return;
 
             lb.scale = 1; lb.x = 0; lb.y = 0;
             lightboxImg.src = imgEl.src;
