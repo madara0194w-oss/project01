@@ -1822,9 +1822,12 @@
                 margin-top: 20px;
             }
 
-            .how-section,
-            .testimonials-section {
+            .how-section {
                 padding: 24px 20px;
+            }
+
+            .testimonials-section {
+                display: none;
             }
 
             .order-builder-section {
@@ -1949,6 +1952,45 @@
             .order-items-row { gap: 6px; }
         }
 
+        /* ===== COMBO SHOWCASE IMAGES ===== */
+        .combo-showcase-section {
+            padding: 30px 20px;
+            background-color: var(--cream);
+        }
+
+        .combo-showcase-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .combo-showcase-img {
+            width: 100%;
+            height: 100%;
+            aspect-ratio: 1 / 1;
+            object-fit: cover;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(139, 69, 19, 0.15);
+            border: 4px solid var(--white);
+        }
+
+        @media (max-width: 480px) {
+            .combo-showcase-section {
+                padding: 14px 14px 0;
+            }
+
+            .combo-showcase-grid {
+                gap: 10px;
+            }
+
+            .combo-showcase-img {
+                border-radius: 12px;
+                border-width: 2px;
+            }
+        }
+
         /* ===== BEFORE AFTER IMAGE COMPARISON SLIDER ===== */
         .comparison-slider-section {
             padding: 40px 20px 60px;
@@ -1988,14 +2030,14 @@
         }
 
         .before-img {
-            z-index: 1;
+            z-index: 2;
+            /* Displays Before image on the left and clips the right side based on --exposure */
+            clip-path: polygon(0 0, var(--exposure) 0, var(--exposure) 100%, 0 100%);
+            -webkit-clip-path: polygon(0 0, var(--exposure) 0, var(--exposure) 100%, 0 100%);
         }
 
         .after-img {
-            z-index: 2;
-            /* Displays After image on the left and clips the right side based on --exposure */
-            clip-path: polygon(0 0, var(--exposure) 0, var(--exposure) 100%, 0 100%);
-            -webkit-clip-path: polygon(0 0, var(--exposure) 0, var(--exposure) 100%, 0 100%);
+            z-index: 1;
         }
 
         .slider-divider {
@@ -2053,11 +2095,11 @@
         }
 
         .badge-before {
-            right: 20px;
+            left: 20px;
         }
 
         .badge-after {
-            left: 20px;
+            right: 20px;
         }
 
         .slider-input {
@@ -2087,8 +2129,8 @@
                 padding: 4px 10px;
                 top: 10px;
             }
-            .badge-before { right: 10px; }
-            .badge-after { left: 10px; }
+            .badge-before { left: 10px; }
+            .badge-after { right: 10px; }
             .slider-handle {
                 width: 34px;
                 height: 34px;
@@ -2663,6 +2705,14 @@ src="https://www.facebook.com/tr?id=3253071001566950&ev=PageView&noscript=1"
 
     <div class="wood-divider"></div>
 
+    <!-- COMBO SHOWCASE IMAGES -->
+    <section class="combo-showcase-section">
+        <div class="combo-showcase-grid">
+            <img src="asset/image3.jpg" alt="কম্বো প্যাকেজ ছবি ৩" class="combo-showcase-img" loading="lazy">
+            <img src="asset/image2.jpg" alt="কম্বো প্যাকেজ ছবি ২" class="combo-showcase-img" loading="lazy">
+        </div>
+    </section>
+
     <!-- COMPARISON SLIDER SECTION -->
     <section class="comparison-slider-section">
         <div class="section-header">
@@ -2795,18 +2845,18 @@ src="https://www.facebook.com/tr?id=3253071001566950&ev=PageView&noscript=1"
 
             <div class="delivery-title">🚚 ডেলিভারি লোকেশন বেছে নিন</div>
             <div class="delivery-options">
-                <label class="delivery-option active" id="deliveryInsideLabel" onclick="selectDelivery('inside')">
-                    <input type="radio" name="delivery" value="inside" checked>
-                    <div class="delivery-option-text">
-                        <span class="delivery-option-label">ঢাকার ভিতরে</span>
-                        <span class="delivery-option-price">৳80</span>
-                    </div>
-                </label>
                 <label class="delivery-option" id="deliveryOutsideLabel" onclick="selectDelivery('outside')">
                     <input type="radio" name="delivery" value="outside">
                     <div class="delivery-option-text">
                         <span class="delivery-option-label">ঢাকার বাইরে</span>
                         <span class="delivery-option-price">৳130</span>
+                    </div>
+                </label>
+                <label class="delivery-option active" id="deliveryInsideLabel" onclick="selectDelivery('inside')">
+                    <input type="radio" name="delivery" value="inside" checked>
+                    <div class="delivery-option-text">
+                        <span class="delivery-option-label">ঢাকার ভিতরে</span>
+                        <span class="delivery-option-price">৳80</span>
                     </div>
                 </label>
             </div>
