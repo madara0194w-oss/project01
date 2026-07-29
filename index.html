@@ -773,6 +773,10 @@
             animation: none;
         }
 
+        .order-final-btn.btn-flash {
+            animation: flash 0.8s ease-in-out infinite;
+        }
+
         .btn-order {
             width: 100%;
             padding: 16px;
@@ -834,6 +838,17 @@
         .order-builder-section {
             padding: 20px 40px 80px;
             background: var(--light-gray);
+        }
+
+        .order-how-wrap {
+            display: flex;
+            flex-direction: column;
+        }
+
+        @media (max-width: 768px) {
+            .order-how-wrap {
+                flex-direction: column-reverse;
+            }
         }
 
         .order-builder-card {
@@ -2797,7 +2812,8 @@ src="https://www.facebook.com/tr?id=3253071001566950&ev=PageView&noscript=1"
     </section>
 
 
-    <!-- ORDER BUILDER -->
+    <!-- ORDER BUILDER + HOW TO USE (order swapped on mobile only) -->
+    <div class="order-how-wrap">
     <section class="order-builder-section" id="orderBuilder">
         <div class="section-header">
             <h2>আপনার <span>কম্বো তৈরি করুন</span></h2>
@@ -2922,6 +2938,7 @@ src="https://www.facebook.com/tr?id=3253071001566950&ev=PageView&noscript=1"
             </div>
         </div>
     </section>
+    </div>
 
     <!-- TESTIMONIALS -->
     <section class="testimonials-section">
