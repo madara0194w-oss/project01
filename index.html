@@ -2824,12 +2824,12 @@ src="https://www.facebook.com/tr?id=3253071001566950&ev=PageView&noscript=1"
         <div class="order-builder-card">
 
             <div class="combo-tabs" id="comboTabs">
-                <div class="combo-tab" data-combo="2" onclick="selectCombo(2)">
-                    <div class="combo-tab-title">কম্বো ২ — প্রফেশনাল</div>
+                <div class="combo-tab" data-combo="1" onclick="selectCombo(1)">
+                    <div class="combo-tab-title">কম্বো ১ — প্রফেশনাল</div>
                     <div class="combo-tab-price">৳690</div>
                 </div>
-                <div class="combo-tab" data-combo="3" onclick="selectCombo(3)">
-                    <div class="combo-tab-title">কম্বো ৩ — আলটিমেট</div>
+                <div class="combo-tab" data-combo="2" onclick="selectCombo(2)">
+                    <div class="combo-tab-title">কম্বো ২ — আলটিমেট</div>
                     <div class="combo-tab-price">৳790</div>
                 </div>
             </div>
@@ -2959,7 +2959,7 @@ src="https://www.facebook.com/tr?id=3253071001566950&ev=PageView&noscript=1"
 
             <div class="testimonial-card">
                 <div class="stars">★★★★★</div>
-                <p class="testimonial-text">"কম্বো ৩ নিয়েছিলাম। পুরো বাসার ফার্নিচার করতে পেরেছি। দাম একটু বেশি হলেও পরিমাণ অনেক ভালো। আবার কিনব।"</p>
+                <p class="testimonial-text">"কম্বো ২ নিয়েছিলাম। পুরো বাসার ফার্নিচার করতে পেরেছি। দাম একটু বেশি হলেও পরিমাণ অনেক ভালো। আবার কিনব।"</p>
                 <div class="testimonial-author">
                     <div class="author-avatar" style="background: linear-gradient(135deg, #1565C0, #1976D2);">ক</div>
                     <div>
@@ -3112,7 +3112,7 @@ src="https://www.facebook.com/tr?id=3253071001566950&ev=PageView&noscript=1"
         /* ===================== ORDER BUILDER ===================== */
 
         const comboData = {
-            2: {
+            1: {
                 name: 'প্রফেশনাল কেয়ার কম্বো',
                 desc: 'ভার্নিশ ৩০০ গ্রাম + ক্লিনার ৩০০ মিলি + গ্লাভস + ব্রাশ + মাইক্রোফাইবার কাপড়',
                 price: 690,
@@ -3125,9 +3125,9 @@ src="https://www.facebook.com/tr?id=3253071001566950&ev=PageView&noscript=1"
                     { src: 'asset/gloves.png', label: 'গ্লাভস' }
                 ]
             },
-             3: {
-                 name: 'আলটিমেট কেয়ার কম্বো',
-                 desc: 'ক্লিনার ৩০০ মিলি + ভার্নিশ ৫০০ গ্রাম + গ্লাভস + ব্রাশ + মাইক্রোফাইবার কাপড়',
+            2: {
+                name: 'আলটিমেট কেয়ার কম্বো',
+                desc: 'ক্লিনার ৩০০ মিলি + ভার্নিশ ৫০০ গ্রাম + গ্লাভস + ব্রাশ + মাইক্রোফাইবার কাপড়',
                 price: 790,
                 originalPrice: 1040,
                 items: [
@@ -3145,7 +3145,7 @@ src="https://www.facebook.com/tr?id=3253071001566950&ev=PageView&noscript=1"
             outside: { label: 'ঢাকার বাইরে', charge: 130 }
         };
 
-        let orderState = { combo: 2, delivery: 'inside' };
+        let orderState = { combo: 1, delivery: 'inside' };
 
         function goToOrderBuilder(comboId) {
             selectCombo(comboId);
@@ -3532,7 +3532,7 @@ src="https://www.facebook.com/tr?id=3253071001566950&ev=PageView&noscript=1"
 
         // Initialize the order builder on page load
         async function initPage() {
-            selectCombo(2);
+            selectCombo(1);
             initSupabase();
             await checkStockStatus();
             startAutoSwipe();
